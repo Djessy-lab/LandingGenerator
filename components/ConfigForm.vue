@@ -13,7 +13,9 @@
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
           Créer une nouvelle configuration
         </h2>
-        <h2 v-ele class="text-xl font-amsterdam text-center" >{{configName}}</h2>
+        <h2 v-ele class="text-xl font-amsterdam text-center">
+          {{ configName }}
+        </h2>
         <div v-if="currentStep === 1">
           <h3 class="text-xl font-semibold mb-4">Informations de base</h3>
           <div class="grid grid-cols-2 max-lg:grid-cols-1 gap-4">
