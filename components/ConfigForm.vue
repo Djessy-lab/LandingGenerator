@@ -13,7 +13,7 @@
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
           Créer une nouvelle configuration
         </h2>
-        <h2 v-ele class="text-xl font-amsterdam text-center">
+        <h2 v-else class="text-xl font-amsterdam text-center">
           {{ configName }}
         </h2>
         <div v-if="currentStep === 1">
