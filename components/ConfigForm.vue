@@ -9,6 +9,7 @@
     <div
       class="rounded-lg shadow-xl w-[80%] mx-auto p-8 bg-gray-50 dark:bg-gray-800"
     >
+    
       <form @submit.prevent="submitForm" class="space-y-6 dark:text-white">
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
           Créer une nouvelle configuration
