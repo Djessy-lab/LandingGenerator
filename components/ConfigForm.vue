@@ -1,15 +1,8 @@
 <template>
   <div class="py-8">
-    <div>
-      <h1 class="text-center text-5xl font-bold">LandingGenerator</h1>
-    </div>
-    <div class="ml-4">
-      <ThemeToggle size="sm" />
-    </div>
     <div
       class="rounded-lg shadow-xl w-[80%] mx-auto p-8 bg-gray-50 dark:bg-gray-800"
     >
-    
       <form @submit.prevent="submitForm" class="space-y-6 dark:text-white">
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
           Créer une nouvelle configuration
@@ -234,6 +227,9 @@
 
 <script>
 export default {
+  props: {
+    userId: { type: String, required: true },
+  },
   data() {
     return {
       currentStep: 1,
@@ -303,17 +299,23 @@ export default {
   methods: {
     async submitForm() {
       try {
+        const newConfig = {
+          ...this.config,
+          createdAt: new Date().toISOString(),
+        };
+
         const result = await $fetch("/api/saveConfig", {
           method: "POST",
-          body: { configName: this.configName, config: this.config },
+          body: { userId: this.userId, configName: this.configName, config: newConfig },
         });
+        if (result.error) {
+          throw new Error(result.error);
+        }
         alert(result.message);
-        this.$router.push({
-          name: "page",
-          query: { configName: this.configName },
-        });
+        this.$router.push({ path: '/', query: { userId: this.userId } });
       } catch (error) {
         console.error("Erreur lors de la soumission du formulaire:", error);
+        alert("Erreur lors de la soumission du formulaire: " + error.message);
       }
     },
     resetForm() {

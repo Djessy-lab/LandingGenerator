@@ -10,13 +10,13 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as jwt.JwtPayload; 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as jwt.JwtPayload;
     const email = decoded.email;
 
     const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
 
     if (user) {
-      return { status: 200, email: user.email };
+      return { status: 200, email: user.email, userId: user.id }; 
     } else {
       return { status: 404, message: "Utilisateur non trouvé." };
     }

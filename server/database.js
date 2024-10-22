@@ -28,7 +28,8 @@ db.exec(`
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE
+    email TEXT NOT NULL UNIQUE,
+    configs TEXT NOT NULL DEFAULT '[]'
   )
 `);
 
@@ -38,5 +39,13 @@ db.exec(`
     config TEXT NOT NULL
   )
 `);
+
+try {
+  db.exec(`ALTER TABLE users ADD COLUMN configs TEXT NOT NULL DEFAULT '[]'`);
+} catch (error) {
+  if (!error.message.includes("duplicate column name: configs")) {
+    console.error('Erreur lors de l\'ajout de la colonne configs:', error);
+  }
+}
 
 export default db;

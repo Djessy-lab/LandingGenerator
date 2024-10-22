@@ -8,14 +8,23 @@ export default {
   name: 'page',
   data() {
     return {
-      currentConfig: null
+      currentConfig: null,
+      userId: null,
     };
   },
   async mounted() {
     const configName = this.$route.query.configName;
-    if (configName) {
+    this.userId = this.$route.query.userId
+
+    if (configName && this.userId) {
       try {
-        this.currentConfig = await $fetch(`/api/getConfig?configName=${configName}`);
+        const configs = await $fetch(`/api/getConfig?userId=${this.userId}`);
+
+        this.currentConfig = configs.find(config => config.configName === configName);
+
+        if (!this.currentConfig) {
+          console.error('Configuration non trouvée pour le nom:', configName);
+        }
       } catch (error) {
         console.error('Erreur lors du chargement de la configuration:', error);
       }
