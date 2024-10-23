@@ -1,11 +1,11 @@
 <template>
-  <div class="shadow-lg h-20 rounded-lg dark:bg-gray-800 hover:shadow-md transition-all duration-300 cursor-pointer">
-    <h2 class="text-xl font-amsterdam text-center">{{ config.configName }}</h2>
+  <div class="shadow-lg h-20 rounded-lg dark:bg-gray-800 hover:shadow-md transition-all duration-300 cursor-pointer font-prompt">
+    <h2 class="ml-2">Config : {{ config.configName }}</h2>
     <div class="ml-2">
-      <p>{{ config.appName }}</p>
+      <p>Application : {{ config.appName }}</p>
     </div>
     <div class="flex justify-end mr-2">
-      <p class="text-xs">{{ formattedCreatedAt }}</p>
+      <p class="text-xs">Date de création : {{ formattedCreatedAt }}</p>
     </div>
   </div>
 </template>

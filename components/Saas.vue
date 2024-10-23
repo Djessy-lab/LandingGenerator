@@ -5,7 +5,7 @@
   <div>
     <Advantages :color="color" :advantages="advantages" :appName="appName" />
   </div>
-  <div>
+  <div class="mt-32">
     <HowItsWorks :imgArg="imgArg" />
   </div>
   <div>

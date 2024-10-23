@@ -1,7 +1,8 @@
 <template>
   <div :class="colorMode.value === 'dark' ? 'bg-gray-900' : gradientClass">
     <header class="flex items-center justify-between p-4">
-      <div class="text-xl font-bold font-mono" :class="colorMode.value === 'dark' ? 'text-gray-200' : 'text-black'"><a href="/">{{ appName }}</a></div>
+      <div class="text-xl font-bold font-mono" :class="colorMode.value === 'dark' ? 'text-gray-200' : 'text-black'"><a
+          href="/">{{ appName }}</a></div>
       <nav>
         <ul class="flex space-x-4">
           <li><a href="#testimonials" :class="colorMode.value === 'dark' ? 'text-gray-200' : linkClass">Avis</a></li>
@@ -9,7 +10,8 @@
             <a href="/login" :class="colorMode.value === 'dark' ? 'text-gray-200' : linkClass">Se connecter</a>
           </li>
           <li v-if="userEmail">
-            <a href="" :class="colorMode.value === 'dark' ? 'text-gray-200' : linkClass" @click.prevent="logout">Se déconnecter</a>
+            <a href="" :class="colorMode.value === 'dark' ? 'text-gray-200' : linkClass" @click.prevent="logout">Se
+              déconnecter</a>
           </li>
         </ul>
       </nav>
@@ -21,16 +23,14 @@
       <p class="mt-4 text-lg" :class="colorMode.value === 'dark' ? 'text-gray-300' : 'text-gray-600'">
         {{ description }}
       </p>
-      <div v-if="userEmail" class="mt-4 text-lg" :class="colorMode.value === 'dark' ? 'text-gray-300' : 'text-gray-800'">
-        Bienvenue, {{ userEmail }}!
-      </div>
       <div v-if="!userEmail" class="mt-6">
-        <button @click="goLogin" :class="[`max-w-32 min-w-32 px-4 py-2 rounded-lg shadow`, colorMode.value === 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : buttonClass]">
+        <button @click="goLogin"
+          :class="[`max-w-32 min-w-32 px-4 py-2 rounded-lg shadow`, colorMode.value === 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : buttonClass]">
           S'inscrire
         </button>
       </div>
-      <div class="mt-8">
-        <img :src="imgHero" alt="Producteurs et Consommateurs" class="mx-auto sm:w-[80%] lg:w-[35%]" />
+      <div class="mt-8 sm:w-[80%] lg:w-[60%] mx-auto shadow-2xl rounded-2xl mb-10">
+        <img :src="imgHero" class="rounded-2xl" />
       </div>
     </section>
   </div>
