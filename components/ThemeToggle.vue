@@ -2,15 +2,40 @@
   <div class="flex items-center">
     <label for="theme-toggle" class="flex items-center cursor-pointer">
       <div class="relative">
-        <input type="checkbox" id="theme-toggle" class="sr-only" :checked="colorMode.value === 'dark'"
-          @change="toggleColorMode">
+        <input
+          type="checkbox"
+          id="theme-toggle"
+          class="sr-only"
+          :checked="colorMode.value === 'dark'"
+          @change="toggleColorMode"
+        />
         <div
-          :class="['toggle-bg', toggleSize.bg, 'bg-gray-300 rounded-full shadow-inner transition-colors duration-700 ease-in-out dark:bg-gray-600']">
-        </div>
+          :class="[
+            'toggle-bg',
+            toggleSize.bg,
+            'bg-gray-300 rounded-full shadow-inner transition-colors duration-700 ease-in-out dark:bg-gray-600',
+          ]"
+        ></div>
         <div
-          :class="['dot', toggleSize.dot, 'absolute bg-white rounded-full shadow flex items-center justify-center transition-all duration-1000 ease-in-out', colorMode.value === 'dark' ? toggleSize.translateDark : toggleSize.translateLight]">
-          <Icon :name="iconName"
-            :class="['transition-all duration-1000 ease-in-out', iconSize, colorMode.value === 'dark' ? 'text-yellow-300 rotate-[360deg] scale-110' : 'text-orange-400 rotate-0 scale-100']" />
+          :class="[
+            'dot',
+            toggleSize.dot,
+            'absolute bg-white rounded-full shadow flex items-center justify-center transition-all duration-1000 ease-in-out',
+            colorMode.value === 'dark'
+              ? toggleSize.translateDark
+              : toggleSize.translateLight,
+          ]"
+        >
+          <Icon
+            :name="iconName"
+            :class="[
+              'transition-all duration-1000 ease-in-out',
+              iconSize,
+              colorMode.value === 'dark'
+                ? 'text-yellow-300 rotate-[360deg] scale-110'
+                : 'text-orange-400 rotate-0 scale-100',
+            ]"
+          />
         </div>
       </div>
     </label>
@@ -19,65 +44,68 @@
 
 <script>
 export default {
-  name: 'ThemeToggle',
+  name: "ThemeToggle",
   props: {
     size: {
       type: String,
-      default: 'md',
-      validator: value => ['sm', 'md', 'lg'].includes(value),
+      default: "md",
+      validator: (value) => ["sm", "md", "lg"].includes(value),
     },
   },
   data() {
     return {
       colorMode: useColorMode(),
-    }
+    };
   },
   computed: {
     iconName() {
-      return this.colorMode.value === 'dark' ? 'lucide:moon' : 'lucide:sun'
+      return this.colorMode.value === "dark"
+        ? "line-md:sunny-filled-loop-to-moon-filled-loop-transition"
+        : "line-md:moon-alt-to-sunny-outline-loop-transition";
     },
     toggleSize() {
       switch (this.size) {
-        case 'sm':
+        case "sm":
           return {
-            bg: 'w-12 h-6',
-            dot: 'w-5 h-5 top-0.5 left-0.5',
-            translateDark: 'translate-x-6',
-            translateLight: 'translate-x-0',
-          }
-        case 'lg':
+            bg: "w-12 h-6",
+            dot: "w-5 h-5 top-0.5 left-0.5",
+            translateDark: "translate-x-6",
+            translateLight: "translate-x-0",
+          };
+        case "lg":
           return {
-            bg: 'w-20 h-10',
-            dot: 'w-8 h-8 top-1 left-1',
-            translateDark: 'translate-x-10',
-            translateLight: 'translate-x-0',
-          }
+            bg: "w-20 h-10",
+            dot: "w-8 h-8 top-1 left-1",
+            translateDark: "translate-x-10",
+            translateLight: "translate-x-0",
+          };
         default:
           return {
-            bg: 'w-14 h-8',
-            dot: 'w-6 h-6 top-1 left-1',
-            translateDark: 'translate-x-6',
-            translateLight: 'translate-x-0',
-          }
+            bg: "w-14 h-8",
+            dot: "w-6 h-6 top-1 left-1",
+            translateDark: "translate-x-6",
+            translateLight: "translate-x-0",
+          };
       }
     },
     iconSize() {
       switch (this.size) {
-        case 'sm':
-          return 'w-3 h-3'
-        case 'lg':
-          return 'w-6 h-6'
+        case "sm":
+          return "w-3 h-3";
+        case "lg":
+          return "w-6 h-6";
         default:
-          return 'w-5 h-5'
+          return "w-5 h-5";
       }
     },
   },
   methods: {
     toggleColorMode() {
-      this.colorMode.preference = this.colorMode.value === 'dark' ? 'light' : 'dark'
+      this.colorMode.preference =
+        this.colorMode.value === "dark" ? "light" : "dark";
     },
   },
-}
+};
 </script>
 
 <style scoped>

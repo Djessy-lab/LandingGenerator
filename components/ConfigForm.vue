@@ -12,7 +12,7 @@
         </h2>
         <div v-if="currentStep === 1">
           <h3 class="text-xl font-semibold mb-4">Informations de base</h3>
-          <div class="grid grid-cols-2 max-lg:grid-cols-1 gap-4">
+          <div class="grid grid-cols-2 gap-4">
             <div
               v-for="(value, key) in baseFields"
               :key="key"
