@@ -17,7 +17,7 @@
   <div>
     <GetEmail :color="color" />
   </div>
-  <div class="absolute top-2 right-44">
+  <div class="absolute top-2 right-44 mt-3 mr-3">
     <ThemeToggle size="sm" />
   </div>
 </template>

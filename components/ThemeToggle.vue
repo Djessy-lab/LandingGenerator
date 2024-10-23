@@ -40,8 +40,8 @@ export default {
       switch (this.size) {
         case 'sm':
           return {
-            bg: 'w-12 h-6 mt-3',
-            dot: 'w-5 h-5 top-0.5 left-0.5 mt-3',
+            bg: 'w-12 h-6',
+            dot: 'w-5 h-5 top-0.5 left-0.5',
             translateDark: 'translate-x-6',
             translateLight: 'translate-x-0',
           }

@@ -1,7 +1,7 @@
 <template>
   <div class="py-8">
     <div
-      class="rounded-lg shadow-xl w-[80%] mx-auto p-8 bg-gray-50 dark:bg-gray-800"
+      class="rounded-lg shadow-xl w-[80%] mx-auto p-8 bg-gray-50 dark:bg-gray-800 h-[38rem]"
     >
       <form @submit.prevent="submitForm" class="space-y-6 dark:text-white">
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
@@ -41,7 +41,7 @@
                 :id="key"
                 required
                 :placeholder="value.placeholder"
-                rows="4"
+                rows="2"
               ></textarea>
             </div>
           </div>
@@ -197,7 +197,7 @@
           </div>
         </div>
 
-        <div class="flex justify-end mt-6">
+        <div class="flex justify-end mt-6 fixed bottom-20 right-36">
           <button
             v-if="currentStep > 1"
             @click.prevent="currentStep--"
