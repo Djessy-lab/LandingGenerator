@@ -1,54 +1,31 @@
 <template>
-  <div class="flex min-h-[100vh] sticky top-0 bg-gray-100 dark:bg-gray-900">
+  <div class="lg:flex max-lg:w-[100%] min-h-[100vh] sticky top-0 bg-gray-100 dark:bg-gray-900">
     <aside :class="sideBarClasses">
       <ThemeToggle size="sm" />
       <div class="mt-4 w-full" v-if="isSidebarOpen">
         <h2 class="text-lg font-bold mb-4">Configurations</h2>
         <ul class="space-y-2 flex-1">
-          <li
-            @click="toggleConfigsView"
-            class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer"
-          >
+          <li @click="toggleConfigsView"
+            class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer">
             Voir les configurations
-            <Icon
-              name="line-md:watch"
-              class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center"
-            />
+            <Icon name="line-md:watch" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
           </li>
-          <li
-            @click="toggleNewConfigView"
-            class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer"
-          >
+          <li @click="toggleNewConfigView"
+            class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer">
             Créer une configuration
-            <Icon
-              name="line-md:plus-circle"
-              class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center"
-            />
+            <Icon name="line-md:plus-circle" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
           </li>
         </ul>
       </div>
-      <div
-        v-if="userEmail && isSidebarOpen"
-        @click="logout"
-        class="flex justify-between items-center mt-auto text-red-600 dark:text-red-100 hover:bg-white dark:hover:bg-slate-900 p-2 w-full rounded-lg cursor-pointer"
-      >
+      <div v-if="userEmail && isSidebarOpen" @click="logout"
+        class="flex justify-between items-center mt-auto text-red-600 dark:text-red-100 hover:bg-white dark:hover:bg-slate-900 p-2 w-full rounded-lg cursor-pointer">
         Se déconnecter
-        <Icon
-          name="line-md:log-out"
-          class="text-red-600 dark:text-red-100 h-5 w-5 items-center"
-        />
+        <Icon name="line-md:log-out" class="text-red-600 dark:text-red-100 h-5 w-5 items-center" />
       </div>
     </aside>
 
-    <button
-      @click="toggleSidebar"
-      class="p-2 rounded-lg absolute z-10"
-      :class="buttonToggleSideBarClasses"
-    >
-      <Icon
-        :name="iconSideBar"
-        class="text-gray-600 dark:text-gray-200 h-5 w-5"
-      />
+    <button @click="toggleSidebar" class="p-2 rounded-lg absolute z-10" :class="buttonToggleSideBarClasses">
+      <Icon :name="iconSideBar" class="text-gray-600 dark:text-gray-200 h-5 w-5" />
     </button>
 
     <main class="flex-1 p-4 dark:bg-gray-900">
@@ -66,11 +43,7 @@
         </div>
       </div>
       <div v-if="newConfigView">
-        <ConfigForm
-          :userId="userId"
-          @configUpdated="updateConfig"
-          :userEmail="userEmail"
-        />
+        <ConfigForm :userId="userId" @configUpdated="updateConfig" :userEmail="userEmail" />
       </div>
     </main>
   </div>
@@ -101,21 +74,18 @@ export default {
         : "line-md:close-to-menu-transition";
     },
     buttonToggleSideBarClasses() {
-      return `transform transition-transform duration-500 left-auto mt-2 ${
-        this.isSidebarOpen ? "translate-x-52" : "translate-x-0"
-      }`;
+      return `transform transition-transform duration-500 left-auto mt-2 ${this.isSidebarOpen ? "translate-x-52 max-lg:absolute max-lg:top-0 max-lg:right-52" : "translate-x-0 max-lg:fixed max-lg:top-0 max-lg:right-2"
+        }`;
     },
     sideBarClasses() {
-      return `bg-gray-200 dark:bg-gray-800 p-4 shadow-lg flex flex-col items-start transform transition-all duration-500 overflow-hidden ${
-        this.isSidebarOpen
-          ? "translate-x-0 w-64 opacity-100"
-          : "-translate-x-full w-0 opacity-0"
-      }`;
+      return `bg-gray-200 dark:bg-gray-800 p-4 shadow-lg flex flex-col items-start transform transition-all duration-500 overflow-hidden ${this.isSidebarOpen
+          ? "translate-x-0 w-64 max-lg:w-full max-lg:translate-y-0 opacity-100"
+          : "-translate-x-full w-0 max-lg:-translate-y-full opacity-0"
+        }`;
     },
     configsViewClasses() {
-      return `grid gap-4 max-lg:grid-cols-1 ${
-        this.isSidebarOpen ? "grid-cols-2" : "grid-cols-3"
-      }`;
+      return `grid gap-4 max-lg:grid-cols-1 ${this.isSidebarOpen ? "grid-cols-2" : "grid-cols-3"
+        }`;
     },
   },
   methods: {

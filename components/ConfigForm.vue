@@ -1,7 +1,7 @@
 <template>
   <div class="py-8">
     <div
-      class="rounded-lg shadow-xl w-[80%] mx-auto p-8 bg-gray-50 dark:bg-gray-800 h-[38rem]"
+      class="rounded-lg shadow-xl w-[90%] max-lg:w-[100%] mx-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-800 min-h-[38rem] max-lg:min-h-[55rem] relative"
     >
       <form @submit.prevent="submitForm" class="space-y-6 dark:text-white">
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
@@ -10,14 +10,15 @@
         <h2 v-else class="text-xl font-amsterdam text-center">
           {{ configName }}
         </h2>
+
         <div v-if="currentStep === 1">
           <h3 class="text-xl font-semibold mb-4">Informations de base</h3>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div
               v-for="(value, key) in baseFields"
               :key="key"
-              class="flex flex-col"
-              :class="{ 'col-span-2': value.type === 'textarea' }"
+              class="flex flex-col w-full"
+              :class="{ 'md:col-span-2': value.type === 'textarea' }"
             >
               <label class="font-semibold" :for="key">{{ value.label }}:</label>
               <input
@@ -54,12 +55,12 @@
               <input
                 v-model="newAdvantage.title"
                 placeholder="Titre"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <input
                 v-model="newAdvantage.text"
                 placeholder="Contenu"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <button
                 @click.prevent="addAdvantage"
@@ -92,24 +93,24 @@
               <input
                 v-model="newPricing.title"
                 placeholder="Titre"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <input
                 v-model.number="newPricing.price"
                 type="number"
                 step="0.01"
                 placeholder="Prix"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <input
                 v-model="newPricing.duration"
                 placeholder="Durée (ex: mois, jour)"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <input
                 v-model="newFeature"
                 placeholder="Caractéristique"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <div class="flex justify-between">
                 <button
@@ -153,12 +154,12 @@
               <input
                 v-model="newTestimonial.author"
                 placeholder="Auteur"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <textarea
                 v-model="newTestimonial.text"
                 placeholder="Texte du témoignage"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               ></textarea>
               <input
                 v-model.number="newTestimonial.stars"
@@ -166,7 +167,7 @@
                 min="1"
                 max="5"
                 placeholder="Nombre d'étoiles (1-5)"
-                class="border rounded-lg p-2 dark:text-black"
+                class="border rounded-lg p-2 w-full dark:text-black"
               />
               <button
                 @click.prevent="addTestimonial"
@@ -197,7 +198,7 @@
           </div>
         </div>
 
-        <div class="flex justify-end mt-6 fixed bottom-20 right-36">
+        <div class="absolute bottom-0 right-0 flex justify-end space-x-2 p-4">
           <button
             v-if="currentStep > 1"
             @click.prevent="currentStep--"
@@ -224,7 +225,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: {

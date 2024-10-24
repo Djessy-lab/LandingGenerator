@@ -1,5 +1,6 @@
 <template>
-  <div class="shadow-lg h-20 rounded-lg dark:bg-gray-800 hover:shadow-md transition-all duration-300 cursor-pointer font-prompt">
+  <div
+    class="shadow-lg p-4 rounded-lg dark:bg-gray-800 hover:shadow-md transition-all duration-300 cursor-pointer font-prompt">
     <h2 class="ml-2">Config : {{ config.configName }}</h2>
     <div class="ml-2">
       <p>Application : {{ config.appName }}</p>
