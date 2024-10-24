@@ -1,6 +1,12 @@
 <template>
   <div class="flex items-center">
-    <label for="theme-toggle" class="flex items-center cursor-pointer">
+    <label
+      for="theme-toggle"
+      tabindex="0"
+      class="flex items-center cursor-pointer"
+      @keydown.space.prevent="toggleColorMode"
+      @keydown.enter.prevent="toggleColorMode"
+    >
       <div class="relative">
         <input
           type="checkbox"

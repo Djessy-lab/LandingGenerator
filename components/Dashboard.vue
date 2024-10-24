@@ -5,23 +5,28 @@
       <div class="mt-4 w-full" v-if="isSidebarOpen">
         <h2 class="text-lg font-bold mb-4">Configurations</h2>
         <ul class="space-y-2 flex-1">
-          <li @click="toggleConfigsView"
-            class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer">
-            Voir les configurations
-            <Icon name="line-md:watch" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
+          <li>
+            <button @click="toggleConfigsView"
+              class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer">
+              Voir les configurations
+
+              <Icon name="line-md:watch" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
+            </button>
           </li>
-          <li @click="toggleNewConfigView"
-            class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer">
-            Créer une configuration
-            <Icon name="line-md:plus-circle" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
+          <li>
+            <button @click="toggleNewConfigView"
+              class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer">
+              Créer une configuration
+              <Icon name="line-md:plus-circle" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
+            </button>
           </li>
         </ul>
       </div>
-      <div v-if="userEmail && isSidebarOpen" @click="logout"
+      <button v-if="userEmail && isSidebarOpen" @click="logout"
         class="flex justify-between items-center mt-auto text-red-600 dark:text-red-100 hover:bg-white dark:hover:bg-slate-900 p-2 w-full rounded-lg cursor-pointer">
         Se déconnecter
         <Icon name="line-md:log-out" class="text-red-600 dark:text-red-100 h-5 w-5 items-center" />
-      </div>
+      </button>
     </aside>
 
     <button @click="toggleSidebar" class="p-2 rounded-lg absolute z-10" :class="buttonToggleSideBarClasses">
@@ -74,17 +79,17 @@ export default {
         : "line-md:close-to-menu-transition";
     },
     buttonToggleSideBarClasses() {
-      return `transform transition-transform duration-500 left-auto mt-2 ${this.isSidebarOpen ? "translate-x-52 max-lg:absolute max-lg:top-0 max-lg:right-52" : "translate-x-0 max-lg:fixed max-lg:top-0 max-lg:right-2"
+      return `transform transition-transform duration-500 left-auto mt-2 ${this.isSidebarOpen ? "translate-x-52 max-lg:absolute max-lg:top-0 max-lg:right-52 " : "translate-x-0 max-lg:absolute max-lg:top-0 max-lg:right-2"
         }`;
     },
     sideBarClasses() {
-      return `bg-gray-200 dark:bg-gray-800 p-4 shadow-lg flex flex-col items-start transform transition-all duration-500 overflow-hidden ${this.isSidebarOpen
-          ? "translate-x-0 w-64 max-lg:w-full max-lg:translate-y-0 opacity-100"
-          : "-translate-x-full w-0 max-lg:-translate-y-full opacity-0"
+      return `bg-gray-200 dark:bg-gray-800 p-4 shadow-lg relative flex flex-col items-start transform transition-all duration-500 overflow-hidden ${this.isSidebarOpen
+        ? "translate-x-0 w-64 max-lg:w-full max-lg:translate-y-0 opacity-100"
+        : "translate-x-full w-0 max-lg:-translate-y-full opacity-0"
         }`;
     },
     configsViewClasses() {
-      return `grid gap-4 max-lg:grid-cols-1 ${this.isSidebarOpen ? "grid-cols-2" : "grid-cols-3"
+      return `grid gap-6 max-lg:grid-cols-1 ${this.isSidebarOpen ? "grid-cols-3" : "grid-cols-4"
         }`;
     },
   },
@@ -143,3 +148,5 @@ export default {
   },
 };
 </script>
+
+// random image unsplash : https://
