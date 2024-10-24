@@ -9,7 +9,6 @@
             <button @click="toggleConfigsView"
               class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer">
               Voir les configurations
-
               <Icon name="line-md:watch" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
             </button>
           </li>
@@ -43,12 +42,25 @@
         </p>
         <div v-else :class="configsViewClasses">
           <div v-for="(config, index) in userConfigs" :key="index">
-            <ConfigCard :config="config" @click="openConfig(config)" />
+            <ConfigCard :config="config" @openConfig="openConfig" @deleteConfig="askDeleteConfig(config)" />
           </div>
         </div>
       </div>
       <div v-if="newConfigView">
         <ConfigForm :userId="userId" @configUpdated="updateConfig" :userEmail="userEmail" />
+      </div>
+
+      <div v-if="showConfirmDialog" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
+          <p>Êtes-vous sûr de vouloir supprimer cette configuration ?</p>
+          <div class="mt-4 flex justify-end space-x-2">
+            <button @click="deleteConfig(currentConfig)"
+              class="bg-red-600 text-white px-4 py-2 rounded-lg">Supprimer</button>
+            <button @click="showConfirmDialog = false"
+              class="bg-gray-300 text-black px-4 py-2 rounded-lg">Annuler</button>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -70,7 +82,14 @@ export default {
       isSidebarOpen: true,
       noConfigMessage:
         "Vous n'avez pas encore de configurations, créez-en une en quelques clics !",
+      showConfirmDialog: false,
     };
+  },
+  mounted() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeyDown);
   },
   computed: {
     iconSideBar() {
@@ -89,11 +108,16 @@ export default {
         }`;
     },
     configsViewClasses() {
-      return `grid gap-6 max-lg:grid-cols-1 ${this.isSidebarOpen ? "grid-cols-3" : "grid-cols-4"
+      return `grid gap-8 max-lg:grid-cols-1 ${this.isSidebarOpen ? "grid-cols-3" : "grid-cols-4"
         }`;
     },
   },
   methods: {
+    handleKeyDown(event) {
+      if (event.key === 'Escape' && this.showConfirmDialog) {
+        this.showConfirmDialog = false;
+      }
+    },
     async updateConfig(configName) {
       try {
         const config = await $fetch(`/api/getConfig?configName=${configName}`);
@@ -145,8 +169,21 @@ export default {
         query: { configName: config.configName, userId: this.userId },
       });
     },
+    askDeleteConfig(config) {
+      this.currentConfig = config;
+      this.showConfirmDialog = true;
+    },
+    async deleteConfig(config) {
+      try {
+        const response = await $fetch(`/api/deleteConfig?userId=${this.userId}&configName=${config.configName}`, {
+          method: 'DELETE'
+        });
+        this.showConfirmDialog = false;
+        this.$router.go(0);
+      } catch (error) {
+        console.error("Erreur lors de la suppression de la configuration:", error);
+      }
+    }
   },
 };
 </script>
-
-// random image unsplash : https://

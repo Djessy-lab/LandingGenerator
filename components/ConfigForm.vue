@@ -36,8 +36,9 @@
                 class="border rounded-lg p-2 w-full dark:text-black" />
               <input v-model="newAdvantage.text" placeholder="Contenu"
                 class="border rounded-lg p-2 w-full dark:text-black" />
-              <button @click.prevent="addAdvantage" class="bg-green-500 text-white p-2 rounded-lg">
+              <button @click.prevent="addAdvantage" class="border dark:border-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 shadow hover:shadow-none transition-all duration-300  p-2 rounded-lg flex items-center justify-center">
                 Ajouter
+                <Icon name="line-md:plus" class="h-5 w-5 ml-2" />
               </button>
             </div>
             <p>Nombre d'avantages ajoutés : {{ config.advantages.length }}</p>
@@ -63,10 +64,11 @@
               <input v-model="newFeature" placeholder="Caractéristique"
                 class="border rounded-lg p-2 w-full dark:text-black" />
               <div class="flex justify-between">
-                <button @click.prevent="addFeature" class="bg-green-500 text-white p-2 rounded-lg">
+                <button @click.prevent="addFeature" class="border dark:border-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 shadow hover:shadow-none transition-all duration-300  p-2 rounded-lg flex items-center justify-center">
                   Ajouter caractéristique
+                  <Icon />
                 </button>
-                <button @click.prevent="addPricing" class="bg-blue-500 text-white p-2 rounded-lg">
+                <button @click.prevent="addPricing" class="border dark:border-none shadow hover:shadow-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-300  p-2 rounded-lg flex items-center justify-center">
                   Ajouter tarif
                 </button>
               </div>
@@ -94,8 +96,9 @@
                 class="border rounded-lg p-2 w-full dark:text-black"></textarea>
               <input v-model.number="newTestimonial.stars" type="number" min="1" max="5"
                 placeholder="Nombre d'étoiles (1-5)" class="border rounded-lg p-2 w-full dark:text-black" />
-              <button @click.prevent="addTestimonial" class="bg-green-500 text-white p-2 rounded-lg">
-                Ajouter témoignage
+              <button @click.prevent="addTestimonial" class="flex justify-center items-center border dark:border-none shadow hover:shadow-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-300 p-2 rounded-lg">
+                Ajouter
+                <Icon name="line-md:plus" class="h-5 w-5 ml-2" />
               </button>
             </div>
             <p>
@@ -123,7 +126,8 @@
             Suivant
           </button>
 
-          <button v-if="currentStep === 4" type="submit" class="bg-blue-700 hover:bg-blue-800 w-32 h-10 text-white p-2 rounded-lg ml-2">
+          <button v-if="currentStep === 4" type="submit"
+            class="bg-gray-800 hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 border dark:border-black p-2 w-32 h-10 rounded-lg ml-2">
             Enregistrer
           </button>
         </div>
@@ -222,7 +226,7 @@ export default {
           throw new Error(result.error);
         }
         alert(result.message);
-        this.$router.push({ path: "/", query: { userId: this.userId } });
+        this.$router.go(0)
       } catch (error) {
         console.error("Erreur lors de la soumission du formulaire:", error);
         alert("Erreur lors de la soumission du formulaire: " + error.message);
