@@ -15,17 +15,27 @@
           <Icon name="line-md:plus" class="h-5 w-5 ml-2" />
         </button>
       </div>
-      <p>
-        Nombre de témoignages ajoutés : {{ testimonials.length }}
-      </p>
-      <div v-for="(testimonial, index) in testimonials" :key="index" class="flex items-center">
-        <p>
-          {{ testimonial.author }} : {{ testimonial.text }} -
-          {{ testimonial.stars }}/5
-        </p>
-        <button class="text-red-500 p-2 rounded-lg" @click.prevent="removeTestimonial(index)">
-          Supprimer
+      <div class="mb-4 flex items-center">
+        <p class="text-lg font-prompt">Nombre de témoignages ajoutés : {{ testimonials.length }}</p>
+        <button v-if="testimonials.length" class="ml-5" @click.prevent="seeTestimonials = !seeTestimonials">
+          <Icon v-if="!seeTestimonials" name="line-md:chevron-down" class="h-5 w-5 dark:text-blue-100" />
+          <Icon v-else name="line-md:chevron-up" class="h-5 w-5 dark:text-blue-100" />
         </button>
+      </div>
+      <div v-if="testimonials.length"
+        :class="[seeTestimonials ? 'h-56' : 'h-10', 'rounded-lg p-2 w-[72%] max-h-56 max-lg:max-h-96 overflow-auto transition-all duration-500 ease-in-out']">
+
+        <div v-if="seeTestimonials" v-for="(testimonial, index) in testimonials" :key="index" class="flex items-center">
+          <div
+            class="border shadow rounded-lg p-2 w-full dark:border-none dark:bg-gray-900 dark:text-gray-200 mb-2 relative">
+            <button title="Supprimer" class="absolute top-0 right-0 p-2" @click.prevent="removeTestimonial(index)">
+              <Icon name="line-md:close" class="h-4 w-4" />
+            </button>
+            <p><span class="font-semibold">Titre : </span>{{ testimonial.author }}</p>
+            <p class="break-all"><span class="font-semibold">Texte : </span>{{ testimonial.text }}</p>
+            <p><span class="font-semibold">Note : </span>{{ testimonial.stars }}/5</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -47,6 +57,7 @@ export default {
         text: "",
         stars: null,
       },
+      seeTestimonials: false,
     };
   },
   methods: {

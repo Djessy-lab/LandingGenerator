@@ -13,7 +13,7 @@
       <button @click="deletConfig">
         <Icon name="lucide:trash-2" class="text-red-600 hover:text-red-800 dark:text-white h-5 w-5" />
       </button>
-      <button>
+      <button @click="editConfig">
         <Icon name="line-md:pencil" class="text-blue-600 hover:text-blue-800 dark:text-white h-5 w-5" />
       </button>
     </div>
@@ -23,7 +23,7 @@
 <script>
 export default {
   name: "OptionsCard",
-  emits: ["deleteConfig"],
+  emits: ["deleteConfig", "editConfig"],
   data() {
     return {
       viewOptions: false,
@@ -32,6 +32,9 @@ export default {
   methods: {
     deletConfig() {
       this.$emit('deleteConfig')
+    },
+    editConfig() {
+      this.$emit('editConfig')
     }
   }
 }

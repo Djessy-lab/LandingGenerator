@@ -29,8 +29,8 @@
           S'inscrire
         </button>
       </div>
-      <div class="mt-8 sm:w-[80%] lg:w-[60%] mx-auto shadow-2xl rounded-2xl mb-10">
-        <img :src="imgHero" class="rounded-2xl" />
+      <div class="mt-8 sm:w-[80%] lg:w-[65%] mx-auto shadow-2xl rounded-2xl mb-10">
+        <img :src="imgHero" class="rounded-2xl w-full max-h-[38rem] object-cover" />
       </div>
     </section>
   </div>

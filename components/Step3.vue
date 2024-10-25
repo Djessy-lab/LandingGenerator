@@ -4,10 +4,12 @@
     <div class="space-y-4">
       <div class="flex flex-col space-y-2">
         <input v-model="newPricing.title" placeholder="Titre" class="border rounded-lg p-2 w-full dark:text-black" />
-        <input v-model.number="newPricing.price" type="number" step="0.01" placeholder="Prix"
-          class="border rounded-lg p-2 w-full dark:text-black" />
-        <input v-model="newPricing.duration" placeholder="Durée (ex: mois, jour)"
-          class="border rounded-lg p-2 w-full dark:text-black" />
+        <div class="flex gap-2">
+          <input v-model.number="newPricing.price" type="number" step="0.01" placeholder="Prix"
+            class="border rounded-lg p-2 w-full dark:text-black" />
+          <input v-model="newPricing.duration" placeholder="Durée (ex: mois, jour)"
+            class="border rounded-lg p-2 w-full dark:text-black" />
+        </div>
         <input v-model="newFeature" placeholder="Caractéristique"
           class="border rounded-lg p-2 w-full dark:text-black" />
         <div class="flex justify-between">
@@ -22,18 +24,32 @@
           </button>
         </div>
       </div>
-      <p>Nombre de tarifs ajoutés : {{ pricing.length }}</p>
-      <div v-for="(pricing, index) in pricing" :key="index" class="flex items-center">
-        <p>
-          {{ pricing.title }} - {{ pricing.price }} -
-          {{ pricing.duration }} - {{ pricing.features.join(', ') }}
-        </p>
-        <button class="text-red-500 p-2 rounded-lg" @click.prevent="removePricing(index)">
-          Supprimer
+      <div class="mb-4 flex items-center">
+        <p class="text-lg font-prompt">Nombre de tarifs ajoutés : {{ pricing.length }}</p>
+        <button v-if="pricing.length" class="ml-5" @click.prevent="seePrices = !seePrices">
+          <Icon v-if="!seePrices" name="line-md:chevron-down" class="h-5 w-5 dark:text-blue-100" />
+          <Icon v-else name="line-md:chevron-up" class="h-5 w-5 dark:text-blue-100" />
         </button>
+      </div>
+      <div v-if="pricing.length"
+        :class="[seePrices ? 'h-56' : 'h-10', 'rounded-lg p-2 w-[72%] max-h-56 max-lg:max-h-96 overflow-auto transition-all duration-500 ease-in-out']">
+
+        <div v-if="seePrices" v-for="(price, index) in pricing" :key="index" class="flex items-center">
+          <div
+            class="border shadow rounded-lg p-2 w-full dark:border-none dark:bg-gray-900 dark:text-gray-200 mb-2 relative">
+            <button title="Supprimer" class="absolute top-0 right-0 p-2" @click.prevent="removePricing(index)">
+              <Icon name="line-md:close" class="h-4 w-4 " />
+            </button>
+            <p><span class="font-semibold">Titre : </span>{{ price.title }}</p>
+            <p><span class="font-semibold">Prix : </span>{{ price.price }} €</p>
+            <p><span class="font-semibold">Réccurence : </span>{{ price.duration }}</p>
+            <p><span class="font-semibold">Fonctionnalitées : </span>{{ price.features.join(', ') }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -54,6 +70,7 @@ export default {
         features: [],
       },
       newFeature: "",
+      seePrices: false,
     };
   },
   methods: {

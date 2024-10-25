@@ -27,12 +27,10 @@
         <Icon name="line-md:log-out" class="text-red-600 dark:text-red-100 h-5 w-5 items-center" />
       </button>
     </aside>
-
     <button @click="toggleSidebar" class="p-2 rounded-lg absolute z-10" :class="buttonToggleSideBarClasses">
       <Icon :name="iconSideBar" class="text-gray-600 dark:text-gray-200 h-5 w-5" />
     </button>
-
-    <main class="flex-1 p-4 dark:bg-gray-900">
+    <main class="flex-1 p-4 dark:bg-gray-900 overflow-y-auto max-h-[100vh]">
       <h3 class="text-2xl font-prompt">
         Bienvenue sur le tableau de bord {{ userEmail }}
       </h3>
@@ -42,12 +40,19 @@
         </p>
         <div v-else :class="configsViewClasses">
           <div v-for="(config, index) in userConfigs" :key="index">
-            <ConfigCard :config="config" @openConfig="openConfig" @deleteConfig="askDeleteConfig(config)" />
+            <ConfigCard :config="config" @openConfig="openConfig" @deleteConfig="askDeleteConfig(config)"
+              @editConfig="editConfig(config)" />
           </div>
         </div>
       </div>
       <div v-if="newConfigView">
-        <ConfigForm :userId="userId" @configUpdated="updateConfig" :userEmail="userEmail" />
+        <ConfigForm :userId="String(userId)" @configUpdated="updateConfig" :userEmail="userEmail" />
+      </div>
+      <div v-else-if="editConfigView">
+        <Icon name="line-md:arrow-left" class="text-gray-600 dark:text-white h-5 w-5 mt-5 ml-5 cursor-pointer"
+          @click="editConfigView = false; configsView = true" />
+        <ConfigForm :userId="String(userId)" @configUpdated="updateConfig" :userEmail="userEmail"
+          :initial-config="currentConfig" />
       </div>
 
       <div v-if="showConfirmDialog" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -67,6 +72,8 @@
 </template>
 
 <script>
+import config from '~/data/config';
+
 export default {
   name: "Dashboard",
   props: {
@@ -78,10 +85,10 @@ export default {
     return {
       currentConfig: null,
       configsView: true,
+      editConfigView: false,
       newConfigView: false,
       isSidebarOpen: true,
-      noConfigMessage:
-        "Vous n'avez pas encore de configurations, créez-en une en quelques clics !",
+      noConfigMessage: "Vous n'avez pas encore de configurations, créez-en une en quelques clics !",
       showConfirmDialog: false,
     };
   },
@@ -127,10 +134,7 @@ export default {
           console.error(config.error);
         }
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération de la configuration:",
-          error,
-        );
+        console.error("Erreur lors de la récupération de la configuration:", error);
       }
     },
     async logout() {
@@ -172,6 +176,11 @@ export default {
     askDeleteConfig(config) {
       this.currentConfig = config;
       this.showConfirmDialog = true;
+    },
+    editConfig(config) {
+      this.currentConfig = config;
+      this.editConfigView = true;
+      this.configsView = false;
     },
     async deleteConfig(config) {
       try {
