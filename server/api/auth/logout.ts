@@ -1,5 +1,5 @@
 import { defineEventHandler, getHeader } from "h3";
-import db from "../../database";
+import { supabase } from "~/utils/supabase";
 
 export default defineEventHandler(async (event) => {
   const token = getHeader(event, "authorization")?.split(" ")[1];
@@ -9,7 +9,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    db.prepare("DELETE FROM magic_links WHERE token = ?").run(token);
+    const { error } = await supabase
+      .from('magic_links')
+      .delete()
+      .eq('token', token);
+
+    if (error) {
+      throw new Error(error.message);
+    }
 
     return { status: 200, message: "Déconnexion réussie." };
   } catch (error) {
