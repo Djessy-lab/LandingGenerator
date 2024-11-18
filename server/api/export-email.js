@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { supabase } from '../utils/supabase';
+import { supabase } from '~/utils/supabase';
 
 export default defineEventHandler(async (event) => {
   try {
