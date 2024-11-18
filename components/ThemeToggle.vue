@@ -107,8 +107,7 @@ export default {
   },
   methods: {
     toggleColorMode() {
-      this.colorMode.preference =
-        this.colorMode.value === "dark" ? "light" : "dark";
+      this.colorMode.preference = this.colorMode.value === "dark" ? "light" : "dark";
     },
   },
 };

@@ -28,7 +28,10 @@ export default {
         this.userId = response.userId;
         this.userConfigs = await this.fetchUserConfigs(this.userId);
       } else {
-        console.error("Erreur lors de la récupération de l'utilisateur:", response.message);
+        console.error(
+          "Erreur lors de la récupération de l'utilisateur:",
+          response.message
+        );
       }
     } catch (error) {
       console.error("Erreur lors de la récupération de l'utilisateur:", error);
@@ -39,7 +42,10 @@ export default {
       try {
         const response = await $fetch(`/api/getConfig?userId=${userId}`);
         if (response.error) {
-          console.error("Erreur lors de la récupération des configurations:", response.error);
+          console.error(
+            "Erreur lors de la récupération des configurations:",
+            response.error
+          );
           return [];
         }
         return response;

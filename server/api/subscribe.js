@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
-import db from '../database.js';
+import { defineEventHandler, readBody, sendError, createError } from 'h3';
+import { supabase } from '~/utils/supabase';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
@@ -16,17 +17,30 @@ export default defineEventHandler(async (event) => {
       return sendError(event, createError({ statusCode: 400, statusMessage: "L'adresse email est requise." }));
     }
 
-    const emailExists = db.prepare('SELECT COUNT(*) AS count FROM emails WHERE email = ?').get(email).count > 0;
+    const { data: existingEmail, error: emailError } = await supabase
+      .from('emails')
+      .select('email')
+      .eq('email', email)
+      .single();
 
-    if (emailExists) {
+    if (emailError && emailError.code !== 'PGRST116') {
+      return sendError(event, createError({ statusCode: 500, statusMessage: "Erreur lors de la vérification de l'email." }));
+    }
+
+    if (existingEmail) {
       return { message: "Vous êtes déjà inscrit avec cet email." };
     }
 
     const localTimestamp = dayjs().tz('Europe/Paris').format('YYYY-MM-DD HH:mm:ss');
 
     try {
-      const stmt = db.prepare('INSERT INTO emails (email, created_at) VALUES (?, ?)');
-      stmt.run(email, localTimestamp);
+      const { error: insertError } = await supabase
+        .from('emails')
+        .insert([{ email, created_at: localTimestamp }]);
+
+      if (insertError) {
+        return sendError(event, createError({ statusCode: 500, statusMessage: "Erreur lors de l'enregistrement de l'email." }));
+      }
     } catch (error) {
       return sendError(event, createError({ statusCode: 500, statusMessage: "Erreur lors de l'enregistrement de l'email." }));
     }

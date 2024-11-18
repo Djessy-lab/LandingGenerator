@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
-import crypto from 'crypto';
-import db from '../database';
+import { supabase } from '~/utils/supabase';
+import jwt from 'jsonwebtoken';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -10,12 +10,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const generateToken = () => {
-  return crypto.randomBytes(32).toString('hex');
+const generateToken = (email) => {
+  return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '2h' });
 };
 
 export const sendMagicLink = async (email) => {
-  const token = generateToken();
+  const token = generateToken(email);
+  const expirationTime = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+
   const link = `${process.env.BASE_URL}/verify?token=${token}&email=${email}`;
 
   const mailOptions = {
@@ -25,10 +27,21 @@ export const sendMagicLink = async (email) => {
     text: `Cliquez sur ce lien pour vous connecter : ${link}`,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Erreur lors de l\'envoi de l\'email:', error);
+    throw new Error('Erreur lors de l\'envoi de l\'email');
+  }
 
-  const expirationTime = Date.now() + 15 * 60 * 1000;
-  db.prepare('INSERT INTO magic_links (token, email, expires_at) VALUES (?, ?, ?)').run(token, email, expirationTime);
+  const { error } = await supabase
+    .from('magic_links')
+    .insert([{ token, email, expires_at: expirationTime }]);
+
+  if (error) {
+    console.error('Erreur lors de l\'insertion du lien magique:', error.message);
+    throw new Error('Erreur lors de l\'insertion du lien magique');
+  }
 
   return token;
 };

@@ -13,12 +13,11 @@ const router = useRouter();
 
 onMounted(async () => {
   const { token, email } = route.query;
+  console.log("VERIFY", token);
 
   if (token && email) {
     try {
-      const response = await $fetch(
-        `/api/auth/verify?token=${token}&email=${email}`
-      );
+      const response = await $fetch(`/api/auth/verify?token=${token}&email=${email}`);
 
       if (response.status === 200) {
         router.push("/");

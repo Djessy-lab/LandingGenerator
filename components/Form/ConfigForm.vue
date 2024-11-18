@@ -1,7 +1,8 @@
 <template>
   <div class="py-8">
     <div
-      class="rounded-lg shadow-xl w-[90%] max-lg:w-[100%] mx-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-800 min-h-[40rem] max-lg:min-h-[55rem] relative">
+      class="rounded-lg shadow-xl w-[90%] max-lg:w-[100%] mx-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-800 min-h-[40rem] max-lg:min-h-[55rem] relative"
+    >
       <form @submit.prevent="submitForm" class="space-y-6 dark:text-white">
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
           Créer une nouvelle configuration
@@ -9,22 +10,48 @@
         <h2 v-else class="text-xl font-amsterdam text-center">
           {{ configName }}
         </h2>
-        <Step1 v-if="currentStep === 1" :config="config" :configName="configName" @update-config="handleConfigUpdate" />
-        <Step2 v-if="currentStep === 2" :advantages="config.advantages" @updateAdvantages="updateAdvantages" />
-        <Step3 v-if="currentStep === 3" :pricing="config.pricing" @update-pricing="updatePricing" />
-        <Step4 v-if="currentStep === 4" :testimonials="config.testimonials" @update-testimonials="updateTestimonials" />
+        <FormStep1
+          v-if="currentStep === 1"
+          :config="config"
+          :configName="configName"
+          @update-config="handleConfigUpdate"
+        />
+        <FormStep2
+          v-if="currentStep === 2"
+          :advantages="config.advantages"
+          @updateAdvantages="updateAdvantages"
+        />
+        <FormStep3
+          v-if="currentStep === 3"
+          :pricing="config.pricing"
+          @update-pricing="updatePricing"
+        />
+        <FormStep4
+          v-if="currentStep === 4"
+          :testimonials="config.testimonials"
+          @update-testimonials="updateTestimonials"
+        />
         <div class="absolute bottom-0 right-0 flex justify-end space-x-2 p-10">
-          <button v-if="currentStep > 1" @click.prevent="currentStep--"
-            class="bg-white text-black hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-black dark:text-white border dark:border-black p-2 w-32 h-10 rounded-lg">
+          <button
+            v-if="currentStep > 1"
+            @click.prevent="currentStep--"
+            class="bg-white text-black hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-black dark:text-white border dark:border-black p-2 w-32 h-10 rounded-lg"
+          >
             Précédent
           </button>
-          <button v-if="currentStep < 4" @click.prevent="currentStep++"
-            class="bg-gray-800 hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 border dark:border-black p-2 w-32 h-10 rounded-lg ml-2">
+          <button
+            v-if="currentStep < 4"
+            @click.prevent="currentStep++"
+            class="bg-gray-800 hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 border dark:border-black p-2 w-32 h-10 rounded-lg ml-2"
+          >
             Suivant
           </button>
-          <button v-if="currentStep === 4" type="submit"
-            class="bg-gray-800 hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 border dark:border-black p-2 w-32 h-10 rounded-lg ml-2">
-            {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+          <button
+            v-if="currentStep === 4"
+            type="submit"
+            class="bg-gray-800 hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 border dark:border-black p-2 w-32 h-10 rounded-lg ml-2"
+          >
+            {{ isEditMode ? "Mettre à jour" : "Enregistrer" }}
           </button>
         </div>
       </form>
@@ -65,7 +92,6 @@ export default {
       this.configName = this.initialConfig.configName;
       this.config = { ...this.initialConfig };
     }
-
   },
   methods: {
     updatePricing(updatedPricing) {
@@ -85,7 +111,9 @@ export default {
       try {
         const newConfig = {
           ...this.config,
-          createdAt: this.isEditMode ? this.initialConfig.createdAt : new Date().toISOString(),
+          createdAt: this.isEditMode
+            ? this.initialConfig.createdAt
+            : new Date().toISOString(),
         };
 
         const apiUrl = this.isEditMode ? "/api/updateConfig" : "/api/saveConfig";
@@ -98,6 +126,7 @@ export default {
             config: newConfig,
           },
         });
+
         if (result.error) {
           throw new Error(result.error);
         }

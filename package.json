@@ -13,6 +13,7 @@
     "@nuxt/icon": "^1.5.0",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/color-mode": "^3.4.2",
+    "@supabase/supabase-js": "^2.46.1",
     "better-sqlite3": "^9.6.0",
     "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",

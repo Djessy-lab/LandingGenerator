@@ -1,16 +1,21 @@
 import { defineEventHandler, getQuery } from 'h3';
-import db from '../database';
+import { supabase } from '~/utils/supabase';
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const { userId } = getQuery(event);
 
   try {
-    const user = db.prepare('SELECT configs FROM users WHERE id = ?').get(userId);
-    if (user) {
-      return JSON.parse(user.configs || '[]');
-    } else {
-      return { error: 'Utilisateur non trouvé' };
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('configs')
+      .eq('id', userId)
+      .single();
+
+    if (userError) {
+      throw new Error(userError.message);
     }
+
+    return JSON.parse(user.configs || '[]');
   } catch (error) {
     console.error('Erreur lors de la récupération des configurations:', error);
     return { error: 'Erreur lors de la récupération des configurations' };

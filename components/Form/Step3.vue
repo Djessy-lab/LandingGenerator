@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="mb-4 flex items-center">
-        <p class="text-lg font-prompt">Nombre de tarifs ajoutés : {{ pricing.length }}</p>
+        <p v-if="pricing.length" class="text-lg font-prompt">Nombre de tarifs ajoutés : {{ pricing.length }}</p>
         <button v-if="pricing.length" class="ml-5" @click.prevent="seePrices = !seePrices">
           <Icon v-if="!seePrices" name="line-md:chevron-down" class="h-5 w-5 dark:text-blue-100" />
           <Icon v-else name="line-md:chevron-up" class="h-5 w-5 dark:text-blue-100" />

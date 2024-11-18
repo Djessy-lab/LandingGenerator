@@ -1,5 +1,9 @@
 <template>
-  <Saas v-if="currentConfig" v-bind="currentConfig" />
+  <LandingPage
+    v-if="currentConfig"
+    :key="currentConfig.configName"
+    v-bind="currentConfig"
+  />
   <div v-else class="flex justify-center p-10">
     <Icon name="line-md:loading-loop" class="w-48 h-48 text-gray-600" />
   </div>
@@ -22,9 +26,7 @@ export default {
       try {
         const configs = await $fetch(`/api/getConfig?userId=${this.userId}`);
 
-        this.currentConfig = configs.find(
-          (config) => config.configName === configName
-        );
+        this.currentConfig = configs.find((config) => config.configName === configName);
 
         if (!this.currentConfig) {
           console.error("Configuration non trouvée pour le nom:", configName);

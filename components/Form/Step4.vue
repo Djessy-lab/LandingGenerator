@@ -16,7 +16,7 @@
         </button>
       </div>
       <div class="mb-4 flex items-center">
-        <p class="text-lg font-prompt">Nombre de témoignages ajoutés : {{ testimonials.length }}</p>
+        <p class="text-lg font-prompt" v-if="testimonials.length">Nombre de témoignages ajoutés : {{ testimonials.length }}</p>
         <button v-if="testimonials.length" class="ml-5" @click.prevent="seeTestimonials = !seeTestimonials">
           <Icon v-if="!seeTestimonials" name="line-md:chevron-down" class="h-5 w-5 dark:text-blue-100" />
           <Icon v-else name="line-md:chevron-up" class="h-5 w-5 dark:text-blue-100" />

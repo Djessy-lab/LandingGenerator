@@ -1,5 +1,5 @@
 import { defineEventHandler, getHeader } from "h3";
-import db from "../../database";
+import { supabase } from "~/utils/supabase";
 import jwt from "jsonwebtoken";
 
 export default defineEventHandler(async (event) => {
@@ -13,14 +13,20 @@ export default defineEventHandler(async (event) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as jwt.JwtPayload;
     const email = decoded.email;
 
-    const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    if (user) {
-      return { status: 200, email: user.email, userId: user.id }; 
-    } else {
+    if (error) {
+      console.error('Erreur lors de la récupération de l\'utilisateur:', error.message);
       return { status: 404, message: "Utilisateur non trouvé." };
     }
+
+    return { status: 200, email: user.email, userId: user.id };
   } catch (error) {
+    console.error('Erreur lors de la vérification du token:', error);
     return { status: 401, message: "Token invalide." };
   }
 });

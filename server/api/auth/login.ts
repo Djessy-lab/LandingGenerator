@@ -1,31 +1,45 @@
 import { defineEventHandler, readBody } from 'h3';
 import { sendMagicLink } from '../auth.service';
-import db from '../../database';
-import jwt from 'jsonwebtoken';
+import { supabase } from '~/utils/supabase';
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const { email } = body;
+    const body = await readBody(event);
+    const { email } = body;
 
-  if (!email) {
-    return { status: 400, message: 'L\'email est requis.' };
-  }
+    if (!email) {
+        return { status: 400, message: 'L\'email est requis.' };
+    }
 
-  if (!process.env.JWT_SECRET) {
-    throw new Error('JWT_SECRET est requis.');
-  }
+    try {
+        console.log('Envoi du lien magique à:', email);
+        const token = await sendMagicLink(email);
+        console.log('Lien magique envoyé avec succès.');
 
-  try {
-    await sendMagicLink(email);
+        const { data: existingUser, error: fetchError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .single();
 
-    const stmt = db.prepare('INSERT INTO users (email) VALUES (?) ON CONFLICT(email) DO NOTHING');
-    stmt.run(email);
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            console.error('Erreur lors de la récupération de l\'utilisateur:', fetchError.message);
+            throw new Error('Erreur lors de la récupération de l\'utilisateur');
+        }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        if (!existingUser) {
+            const { error: insertError } = await supabase
+                .from('users')
+                .insert([{ email }]);
 
-    return { status: 200, message: 'Lien magique envoyé.', token };
-  } catch (error) {
-    console.error('Erreur lors de l\'envoi du lien magique:', error);
-    return { status: 500, message: 'Erreur lors de l\'envoi du lien magique.' };
-  }
+            if (insertError) {
+                console.error('Erreur lors de l\'insertion de l\'utilisateur:', insertError.message);
+                throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
+            }
+        }
+
+        return { status: 200, message: 'Lien magique envoyé.', token };
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi du lien magique:', error);
+        return { status: 500, message: 'Erreur lors de l\'envoi du lien magique.' };
+    }
 });

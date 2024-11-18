@@ -1,30 +1,35 @@
 <template>
   <div>
-    <HeroSection :imgHero="imgHero" :title="titleHero" :description="descriptionHero" :color="color" :appName="appName" />
+    <LandingHeroSection
+      :imgHero="imgHero"
+      :title="titleHero"
+      :description="descriptionHero"
+      :color="color"
+      :appName="appName"
+    />
   </div>
   <div>
-    <Advantages :color="color" :advantages="advantages" :appName="appName" />
+    <LandingAdvantages :color="color" :advantages="advantages" :appName="appName" />
   </div>
   <div class="mt-32">
-    <HowItsWorks :imgArg="imgArg" />
+    <LandingHowItsWorks :imgArg="imgArg" />
   </div>
   <div>
-    <Pricing :color="color" :pricing="pricing" />
+    <LandingPricing :color="color" :pricing="pricing" />
   </div>
   <div>
-    <Testimonials :testimonials="testimonials" />
+    <LandingTestimonials :testimonials="testimonials" />
   </div>
   <div>
-    <GetEmail :color="color" />
+    <LandingGetEmail :color="color" />
   </div>
   <div class="absolute top-2 right-44 mt-3 mr-3">
     <ThemeToggle size="sm" />
   </div>
 </template>
 <script>
-
 export default {
-  name: 'Home',
+  name: "Home",
   props: {
     titleHero: { type: String, default: "" },
     descriptionHero: { type: String, default: "" },
@@ -35,6 +40,6 @@ export default {
     testimonials: { type: Array, default: () => [] },
     pricing: { type: Array, default: () => [] },
     appName: { type: String, default: "" },
-  }
-}
+  },
+};
 </script>
