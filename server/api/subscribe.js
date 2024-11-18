@@ -62,7 +62,6 @@ export default defineEventHandler(async (event) => {
 
     try {
       const info = await transporter.sendMail(mailOptions);
-      console.log('Email envoyé: ' + info.response);
 
       return { message: 'Email envoyé avec succès!' };
     } catch (error) {

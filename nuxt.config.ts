@@ -1,4 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import dotenv from 'dotenv';
+
+
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+dotenv.config({ path: envFile });
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
@@ -12,6 +18,9 @@ export default defineNuxtConfig({
     public: {
       baseUrl: process.env.BASE_URL,
     },
+    private: {
+      postgresUrl: process.env.POSTGRES_URL,
+    },
   },
   tailwindcss: {
     config: {
@@ -19,7 +28,7 @@ export default defineNuxtConfig({
         extend: {
           fontFamily: {
             amsterdam: ["New Amsterdam", "sans-serif"],
-            prompt: ["Prompt", "sans-serif"], 
+            prompt: ["Prompt", "sans-serif"],
           },
           boxShadow: {
             custom:

@@ -11,9 +11,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        console.log('Envoi du lien magique à:', email);
         const token = await sendMagicLink(email);
-        console.log('Lien magique envoyé avec succès.');
 
         const { data: existingUser, error: fetchError } = await supabase
             .from('users')

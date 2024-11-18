@@ -19,9 +19,6 @@ export default defineEventHandler(async (event) => {
     const currentTime = Date.now();
     const expirationTime = new Date(magicLink.expires_at).getTime();
 
-    console.log('Current Time:', new Date(currentTime).toISOString());
-    console.log('Expiration Time:', new Date(expirationTime).toISOString());
-
     if (currentTime > expirationTime) {
         console.error('Token expiré:', magicLink.expires_at);
         return { status: 401, message: "Token expiré." };

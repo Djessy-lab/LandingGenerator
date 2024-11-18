@@ -16,7 +16,19 @@ export default defineEventHandler(async (event) => {
       throw new Error(userError.message);
     }
 
-    const configs = user.configs ? JSON.parse(user.configs) : [];
+    const configsString = user.configs || '"[]"';
+    let configs;
+
+    try {
+      configs = JSON.parse(configsString);
+    } catch (error) {
+      console.error('Erreur lors du parsing de la configuration:', error);
+      configs = [];
+    }
+
+    if (!Array.isArray(configs)) {
+      configs = [];
+    }
     configs.push({ configName, ...config });
 
     const { error: updateError } = await supabase

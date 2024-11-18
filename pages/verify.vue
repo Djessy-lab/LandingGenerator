@@ -13,7 +13,6 @@ const router = useRouter();
 
 onMounted(async () => {
   const { token, email } = route.query;
-  console.log("VERIFY", token);
 
   if (token && email) {
     try {
