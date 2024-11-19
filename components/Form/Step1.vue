@@ -4,8 +4,9 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div v-for="(value, key) in baseFields" :key="key" class="flex flex-col w-full" :class="{ 'md:col-span-2': value.type === 'textarea' }">
         <label class="font-semibold" :for="key">{{ value.label }}:</label>
+        <ColorPicker v-if="key === 'color'" v-model="localConfig[key]" @update:modelValue="updateConfig" />
         <input
-          v-if="value.type !== 'textarea'"
+          v-else-if="value.type !== 'textarea'"
           :id="key"
           :type="value.type"
           :placeholder="value.placeholder"

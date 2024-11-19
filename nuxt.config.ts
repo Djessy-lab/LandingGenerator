@@ -41,6 +41,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  alias: {
+    '@': './',
+  },
   app: {
     head: {
       link: [

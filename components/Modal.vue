@@ -2,8 +2,11 @@
   <div
     v-if="modelValue"
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+    @keydown.esc="close"
+    tabindex="0"
+    @click.self="close"
   >
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-[40%] max-lg:w-[90%] min-h-52 mx-auto">
+    <div :class="modalSizeClass" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg overflow-scroll mx-auto">
       <div class="flex justify-between">
         <h3 class="text-lg font-semibold mb-4">{{ title }}</h3>
         <button v-if="closeButton" class="h-5 w-5" @click="close">
@@ -13,16 +16,16 @@
           />
         </button>
       </div>
-      <p>{{ content }}</p>
+      <p v-if="!$slots.default">{{ content }}</p>
+      <slot />
       <div class="mt-12 flex justify-end space-x-2" v-if="buttons.length">
-        <button
+        <Button
           v-for="(button, index) in buttons"
           :key="index"
-          :class="buttonClasses(button)"
+          :label="button.text"
+          :level="getButtonLevel(button.type)"
           @click="button.click"
-        >
-          {{ button.text }}
-        </button>
+        />
       </div>
     </div>
   </div>
@@ -37,24 +40,42 @@ export default {
     content: { type: String, default: "Contenu de la modale" },
     buttons: { type: Array, default: () => [] },
     closeButton: { type: Boolean, default: true },
+    size: { type: String, default: "md" },
+  },
+  computed: {
+    modalSizeClass() {
+      const sizeClasses = {
+        sm: { width: 'w-[30%]', height: 'max-h-[60vh]' },
+        md: { width: 'w-[50%]', height: 'max-h-[80vh]' },
+        lg: { width: 'w-[70%]', height: 'max-h-[90vh]' },
+        xl: { width: 'w-[90%]', height: 'max-h-[95vh]' },
+      };
+
+      const { width, height } = sizeClasses[this.size] || sizeClasses.md;
+      return `${width} ${height}`;
+    },
   },
   methods: {
-    buttonClasses(button) {
-      const baseClasses = "p-2 rounded-lg";
-      const color =
-        button.type === "confirm"
-          ? "bg-green-600 text-white"
-          : button.type === "cancel"
-            ? "bg-gray-300 text-black"
-            : button.type === "delete"
-              ? "bg-red-600 text-white"
-              : "bg-black text-white";
-
-      return [baseClasses, color].join(" ");
+    getButtonLevel(type) {
+      if (type === "confirm") return 1;
+      if (type === "cancel") return 3;
+      if (type === "delete") return 2;
+      return 1;
     },
     close() {
       this.$emit("update:modelValue", false);
     },
+    handleKeydown(event) {
+      if (event.key === 'Escape') {
+        this.close();
+      }
+    },
+  },
+  mounted() {
+    window.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeydown);
   },
 };
 </script>

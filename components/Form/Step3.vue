@@ -13,15 +13,15 @@
         <input v-model="newFeature" placeholder="Caractéristique"
           class="border rounded-lg p-2 w-full dark:text-black" />
         <div class="flex justify-between">
-          <button @click.prevent="addFeature"
+          <Button :level="4" @click.prevent="addFeature"
             class="border dark:border-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 shadow hover:shadow-none transition-all duration-300  p-2 rounded-lg flex items-center justify-center">
             Ajouter caractéristique
             <Icon />
-          </button>
-          <button @click.prevent="addPricing"
+          </Button>
+          <Button :level="4" @click.prevent="addPricing"
             class="border dark:border-none shadow hover:shadow-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-300  p-2 rounded-lg flex items-center justify-center">
             Ajouter tarif
-          </button>
+          </Button>
         </div>
       </div>
       <div class="mb-4 flex items-center">

@@ -1,23 +1,14 @@
 <template>
   <div
-    class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-600 transition-colors duration-500"
-  >
+    class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-600 transition-colors duration-500">
     <h2 class="text-center text-2xl mb-10 font-prompt">
       Se connecter avec un lien magique 🪄
     </h2>
-    <input
-      class="rounded-2xl p-2 text-center mb-10 min-w-64 dark:bg-gray-700"
-      v-model="email"
-      type="email"
-      id="auth-email"
-      placeholder="Entrez votre email"
-    />
-    <button
-      :class="`bg-gray-800 hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-gray-100  p-2 h-10 rounded-lg ml-2 min-w-64`"
-      @click="loginWithMagic"
-    >
+    <input class="rounded-2xl p-2 text-center mb-10 min-w-64 dark:bg-gray-700" v-model="email" type="email"
+      id="auth-email" placeholder="Entrez votre email" />
+    <Button :class="min - w - 64" @click="loginWithMagic">
       Se connecter
-    </button>
+    </Button>
   </div>
 </template>
 

@@ -1,60 +1,35 @@
 <template>
-  <div
-    class="lg:flex max-lg:w-[100%] min-h-[100vh] sticky top-0 bg-gray-100 dark:bg-gray-900"
-  >
+  <div class="lg:flex max-lg:w-[100%] min-h-[100vh] sticky top-0 bg-gray-100 dark:bg-gray-900">
     <aside :class="sideBarClasses">
       <ThemeToggle size="sm" />
       <div class="mt-4 w-full" v-if="isSidebarOpen">
         <h2 class="text-lg font-bold mb-4">Configurations</h2>
         <ul class="space-y-2 flex-1">
           <li>
-            <button
-              @click="toggleConfigsView"
-              class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer"
-            >
+            <Button @click="toggleConfigsView" :level="6">
               Voir les configurations
-              <Icon
-                name="line-md:watch"
-                class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center"
-              />
-            </button>
+              <Icon name="line-md:watch" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
+            </Button>
           </li>
           <li>
-            <button
-              @click="toggleNewConfigView"
-              class="flex justify-between items-center w-full hover:bg-white dark:hover:bg-slate-900 p-2 rounded-lg text-blue-600 dark:text-blue-100 cursor-pointer"
-            >
+            <Button @click="toggleNewConfigView" :level="6">
               Créer une configuration
-              <Icon
-                name="line-md:plus-circle"
-                class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center"
-              />
-            </button>
+              <Icon name="line-md:plus-circle" class="text-blue-600 dark:text-blue-100 h-5 w-5 items-center" />
+            </Button>
           </li>
         </ul>
       </div>
-      <button
-        v-if="userEmail && isSidebarOpen"
-        @click="logout"
-        class="flex justify-between items-center mt-auto text-red-600 dark:text-red-100 hover:bg-white dark:hover:bg-slate-900 p-2 w-full rounded-lg cursor-pointer"
-      >
+      <Button v-if="userEmail && isSidebarOpen" @click="logout" :level="7" class="mt-auto">
         Se déconnecter
-        <Icon
-          name="line-md:log-out"
-          class="text-red-600 dark:text-red-100 h-5 w-5 items-center"
-        />
-      </button>
+        <Icon name="line-md:log-out" class="text-red-600 dark:text-red-100 h-5 w-5 items-center" />
+      </Button>
     </aside>
-    <button
-      @click="toggleSidebar"
-      class="p-2 rounded-lg absolute z-10"
-      :class="buttonToggleSideBarClasses"
-    >
+    <button @click="toggleSidebar" class="p-2 rounded-lg absolute z-10" :class="buttonToggleSideBarClasses">
       <Icon :name="iconSideBar" class="text-gray-600 dark:text-gray-200 h-5 w-5" />
     </button>
     <main class="flex-1 p-4 dark:bg-gray-900 overflow-y-auto max-h-[100vh]">
       <h3 class="text-2xl font-prompt">
-        Bienvenue sur le tableau de bord {{ userEmail }}
+        Tableau de bord {{ userEmail }}
       </h3>
       <div v-if="configsView" class="mt-12">
         <p v-if="!userConfigs.length">
@@ -62,46 +37,25 @@
         </p>
         <div v-else :class="configsViewClasses">
           <div v-for="(config, index) in userConfigs" :key="index">
-            <ConfigCard
-              :config="config"
-              @openConfig="openConfig"
-              @deleteConfig="askDeleteConfig(config)"
-              @editConfig="editConfig(config)"
-            />
+            <ConfigCard :config="config" @openConfig="openConfig" @deleteConfig="askDeleteConfig(config)"
+              @editConfig="editConfig(config)" />
           </div>
         </div>
       </div>
       <div v-if="newConfigView">
-        <FormConfigForm
-          :userId="String(userId)"
-          @configUpdated="updateConfig"
-          :userEmail="userEmail"
-        />
+        <FormConfigForm :userId="String(userId)" @configUpdated="updateConfig" :userEmail="userEmail" />
       </div>
       <div v-else-if="editConfigView">
-        <Icon
-          name="line-md:arrow-left"
-          class="text-gray-600 dark:text-white h-5 w-5 mt-5 ml-5 cursor-pointer"
-          @click="
-            editConfigView = false;
-            configsView = true;
-          "
-        />
-        <FormConfigForm
-          :userId="String(userId)"
-          @configUpdated="updateConfig"
-          :userEmail="userEmail"
-          :initial-config="currentConfig"
-        />
+        <Icon name="line-md:arrow-left" class="text-gray-600 dark:text-white h-5 w-5 mt-5 ml-5 cursor-pointer" @click="
+          editConfigView = false;
+        configsView = true;
+        " />
+        <FormConfigForm :userId="String(userId)" @configUpdated="updateConfig" :userEmail="userEmail"
+          :initial-config="currentConfig" />
       </div>
-      <Modal
-        v-if="showConfirmDialog"
-        modelValue="showConfirmDialog"
-        @update:modelValue="showConfirmDialog = false"
-        title="Confirmer la suppression"
-        content="Êtes-vous sûr de vouloir supprimer cette configuration ?"
-        :buttons="buttonsModal"
-      />
+      <Modal v-if="showConfirmDialog" :modelValue="showConfirmDialog" @update:modelValue="showConfirmDialog = false"
+        title="Confirmer la suppression" content="Êtes-vous sûr de vouloir supprimer cette configuration ?"
+        :buttons="buttonsModal" />
     </main>
   </div>
 </template>
@@ -151,23 +105,20 @@ export default {
         : "line-md:close-to-menu-transition";
     },
     buttonToggleSideBarClasses() {
-      return `transform transition-transform duration-500 left-auto mt-2 ${
-        this.isSidebarOpen
-          ? "translate-x-52 max-lg:absolute max-lg:top-0 max-lg:right-52 "
-          : "translate-x-0 max-lg:absolute max-lg:top-0 max-lg:right-2"
-      }`;
+      return `transform transition-transform duration-500 left-auto mt-2 ${this.isSidebarOpen
+        ? "translate-x-52 max-lg:absolute max-lg:top-0 max-lg:right-52 "
+        : "translate-x-0 max-lg:absolute max-lg:top-0 max-lg:right-2"
+        }`;
     },
     sideBarClasses() {
-      return `bg-gray-200 dark:bg-gray-800 p-4 shadow-lg relative flex flex-col items-start transform transition-all duration-500 overflow-hidden ${
-        this.isSidebarOpen
-          ? "translate-x-0 w-64 max-lg:w-full max-lg:translate-y-0 opacity-100"
-          : "translate-x-full w-0 max-lg:-translate-y-full opacity-0"
-      }`;
+      return `bg-gray-200 dark:bg-gray-800 p-4 shadow-lg relative flex flex-col items-start transform transition-all duration-500 overflow-hidden ${this.isSidebarOpen
+        ? "translate-x-0 w-64 max-lg:w-full max-lg:translate-y-0 opacity-100"
+        : "translate-x-full w-0 max-lg:-translate-y-full opacity-0"
+        }`;
     },
     configsViewClasses() {
-      return `grid gap-8 max-lg:grid-cols-1 ${
-        this.isSidebarOpen ? "grid-cols-3" : "grid-cols-4"
-      }`;
+      return `grid gap-8 max-lg:grid-cols-1 ${this.isSidebarOpen ? "grid-cols-3" : "grid-cols-4"
+        }`;
     },
   },
   methods: {

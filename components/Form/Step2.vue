@@ -5,11 +5,11 @@
       <div class="flex flex-col space-y-2">
         <input v-model="newAdvantage.title" placeholder="Titre" class="border rounded-lg p-2 w-full dark:text-black" />
         <input v-model="newAdvantage.text" placeholder="Contenu" class="border rounded-lg p-2 w-full dark:text-black" />
-        <button @click.prevent="addAdvantage"
-          class="border dark:border-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 shadow hover:shadow-none transition-all duration-300 p-2 rounded-lg flex items-center justify-center">
+        <Button :level="4" @click.prevent="addAdvantage"
+          class="w-full">
           Ajouter
           <Icon name="line-md:plus" class="h-5 w-5 ml-2" />
-        </button>
+        </Button>
       </div>
       <div class="mb-4 flex items-center">
         <p class="text-lg font-prompt" v-if="advantages.length">Nombre d'avantages ajoutés : {{ advantages.length }}</p>

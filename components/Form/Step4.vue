@@ -9,11 +9,10 @@
           class="border rounded-lg p-2 w-full dark:text-black"></textarea>
         <input v-model.number="newTestimonial.stars" type="number" min="1" max="5" placeholder="Nombre d'étoiles (1-5)"
           class="border rounded-lg p-2 w-full dark:text-black" />
-        <button @click.prevent="addTestimonial"
-          class="flex justify-center items-center border dark:border-none shadow hover:shadow-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-300 p-2 rounded-lg">
+        <Button :level="4" @click.prevent="addTestimonial">
           Ajouter
           <Icon name="line-md:plus" class="h-5 w-5 ml-2" />
-        </button>
+        </Button>
       </div>
       <div class="mb-4 flex items-center">
         <p class="text-lg font-prompt" v-if="testimonials.length">Nombre de témoignages ajoutés : {{ testimonials.length }}</p>
