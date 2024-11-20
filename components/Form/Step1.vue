@@ -5,7 +5,9 @@
       <div v-for="(value, key) in baseFields" :key="key" class="flex flex-col w-full"
         :class="{ 'md:col-span-2': value.type === 'textarea' }">
         <label class="font-semibold" :for="key">{{ value.label }}:</label>
-        <FileUpload v-if="key === 'imgHero' || key === 'imgArg'" label="Ajouter une image" @file-selected="(fileData) => handleFileSelection(key, fileData)" />
+        <FileUpload v-if="key === 'imgHero' || key === 'imgArg'" label="Ajouter une image"
+          :initialFile="getFileObject(localConfig[key])"
+          @file-selected="(fileData) => handleFileSelection(key, fileData)" />
         <ColorPicker v-else-if="key === 'color'" v-model="localConfig[key]" @update:modelValue="updateConfig" />
         <input v-else-if="value.type !== 'textarea'" :id="key" :type="value.type" :placeholder="value.placeholder"
           class="shadow rounded-lg p-2 mt-1 w-full bg-white dark:bg-slate-700" v-model="localConfig[key]"
@@ -60,13 +62,9 @@ export default {
         },
         imgHero: {
           label: "Image Hero",
-          type: "text",
-          placeholder: "https://...",
         },
         imgArg: {
           label: "Image Arguments",
-          type: "text",
-          placeholder: "https://...",
         },
         descriptionHero: {
           label: "Description Hero",
@@ -77,7 +75,16 @@ export default {
     };
   },
   methods: {
+    getFileObject(url) {
+      if (!url) return null;
+      return { name: url.split('/').pop(), url };
+    },
     handleFileSelection(key, { file, fileName }) {
+      if (file) {
+        this.localConfig[key] = URL.createObjectURL(file);
+      } else {
+        this.localConfig[key] = '';
+      }
       this.$emit('file-selected', { key, file, fileName });
     },
     updateConfig() {

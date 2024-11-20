@@ -4,58 +4,47 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Home",
-  data() {
-    return {
-      currentConfig: null,
-      userEmail: null,
-      userId: null,
-      userConfigs: [],
-    };
-  },
-  async mounted() {
-    try {
-      const response = await $fetch("/api/auth/getUser", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+<script setup>
+import { ref, onMounted } from 'vue';
 
-      if (response.status === 200) {
-        this.userEmail = response.email;
-        this.userId = response.userId;
-        this.userConfigs = await this.fetchUserConfigs(this.userId);
-      } else {
-        console.error(
-          "Erreur lors de la récupération de l'utilisateur:",
-          response.message
-        );
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération de l'utilisateur:", error);
+const userEmail = ref(null);
+const userId = ref(null);
+const userConfigs = ref([]);
+
+async function fetchUserConfigs(userId) {
+  try {
+    const response = await $fetch(`/api/getConfig?userId=${userId}`);
+    if (response.error) {
+      console.error("Erreur lors de la récupération des configurations:", response.error);
+      return [];
     }
-  },
-  methods: {
-    async fetchUserConfigs(userId) {
-      try {
-        const response = await $fetch(`/api/getConfig?userId=${userId}`);
-        if (response.error) {
-          console.error(
-            "Erreur lors de la récupération des configurations:",
-            response.error
-          );
-          return [];
-        }
-        return response;
-      } catch (error) {
-        console.error("Erreur lors de la récupération des configurations:", error);
-        return [];
-      }
-    },
-  },
-};
+    return response;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des configurations:", error);
+    return [];
+  }
+}
+
+onMounted(async () => {
+  try {
+    const response = await $fetch("/api/auth/getUser", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (response.status === 200) {
+      userEmail.value = response.email;
+      userId.value = response.userId;
+      userConfigs.value = await fetchUserConfigs(userId.value);
+    } else {
+      console.error("Erreur lors de la récupération de l'utilisateur:", response.message);
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'utilisateur:", error);
+  }
+});
+
 definePageMeta({
   middleware: "auth",
 });

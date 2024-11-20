@@ -16,15 +16,18 @@
         <FormStep4 v-if="currentStep === 4" :testimonials="config.testimonials"
           @update-testimonials="updateTestimonials" />
         <div class="absolute bottom-0 right-0 flex justify-end space-x-2 p-10">
-          <Button :level="4" v-if="currentStep > 1" @click.prevent="currentStep--">
+          <Button :level="4" v-if="currentStep > 1 && !isLoading" @click.prevent="currentStep--">
             Précédent
           </Button>
           <Button v-if="currentStep < 4" @click.prevent="currentStep++">
             Suivant
           </Button>
-          <Button v-if="currentStep === 4" type="submit">
+          <Button v-if="currentStep === 4 && !isLoading" type="submit">
             {{ isEditMode ? "Mettre à jour" : "Enregistrer" }}
           </Button>
+          <span v-if="isLoading">
+            <Icon name="line-md:loading-loop" class="w-10 h-10 text-gray-600 dark:text-slate-700" />
+          </span>
         </div>
       </form>
     </div>
@@ -57,6 +60,7 @@ export default {
         pricing: [],
       },
       pendingUploads: {},
+      isLoading: false,
     };
   },
   created() {
@@ -88,6 +92,7 @@ export default {
 
     },
     async submitForm() {
+      this.isLoading = true;
       try {
         for (const [key, { file }] of Object.entries(this.pendingUploads)) {
           const formData = new FormData();
@@ -132,6 +137,8 @@ export default {
       } catch (error) {
         console.error("Erreur lors de la soumission du formulaire:", error);
         alert("Erreur lors de la soumission du formulaire: " + error.message);
+      } finally {
+        this.isLoading = false;
       }
     }
   },

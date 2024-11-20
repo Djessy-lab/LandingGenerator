@@ -24,19 +24,30 @@ export default defineEventHandler(async (event) => {
 
     const file = body[0];
     const sanitizedFileName = sanitizeFileName(file.filename);
-    const fileName = `${query.userId}_${sanitizedFileName}`; // Utiliser userId et le nom de fichier
-    const filePath = `images/${fileName}`;
+    const baseFileName = `${query.userId}_${sanitizedFileName}`;
+    let filePath = `images/${baseFileName}`;
 
-    const { data: existingFiles } = await supabase.storage
+    console.log(`Checking for existing file: ${baseFileName}`);
+
+    const { data: existingFiles, error: listError } = await supabase.storage
       .from('landing-generator-bucket')
-      .list('images', {
-        search: fileName
-      });
+      .list('images');
 
-    if (existingFiles && existingFiles.some(file => file.name === fileName)) {
+    if (listError) {
+      throw new Error(`Erreur lors de la liste des fichiers : ${listError.message}`);
+    }
+
+    // Comparer uniquement la partie avant le timestamp
+    const existingFile = existingFiles.find(file => {
+      const baseName = file.name.split('_')[0] + '_' + file.name.split('_')[1]; // ID + filename sans timestamp
+      return baseName === baseFileName;
+    });
+
+    if (existingFile) {
+      console.log(`File already exists: ${existingFile.name}`);
       const { data: existingUrl } = supabase.storage
         .from('landing-generator-bucket')
-        .getPublicUrl(`images/${fileName}`);
+        .getPublicUrl(`images/${existingFile.name}`);
 
       return {
         success: true,
@@ -44,6 +55,12 @@ export default defineEventHandler(async (event) => {
         message: "Fichier déjà existant"
       };
     }
+
+    // Si le fichier n'existe pas, ajouter un timestamp
+    const timestampedFileName = `${query.userId}_${Date.now()}_${sanitizedFileName}`;
+    filePath = `images/${timestampedFileName}`;
+
+    console.log(`Uploading new file: ${timestampedFileName}`);
 
     const { data, error } = await supabase.storage
       .from('landing-generator-bucket')

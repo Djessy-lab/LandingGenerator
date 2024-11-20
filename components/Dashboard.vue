@@ -165,10 +165,12 @@ export default {
     toggleConfigsView() {
       this.configsView = true;
       this.newConfigView = false;
+      this.editConfigView = false; 
     },
     toggleNewConfigView() {
       this.newConfigView = true;
       this.configsView = false;
+      this.editConfigView = false;
     },
     openConfig(config) {
       this.$router.push({

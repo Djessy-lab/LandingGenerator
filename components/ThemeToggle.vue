@@ -12,7 +12,7 @@
           type="checkbox"
           id="theme-toggle"
           class="sr-only"
-          :checked="colorMode.value === 'dark'"
+          :checked="isDarkMode"
           @change="toggleColorMode"
         />
         <div
@@ -27,7 +27,7 @@
             'dot',
             toggleSize.dot,
             'absolute bg-white rounded-full shadow flex items-center justify-center transition-all duration-1000 ease-in-out',
-            colorMode.value === 'dark'
+            isDarkMode
               ? toggleSize.translateDark
               : toggleSize.translateLight,
           ]"
@@ -37,7 +37,7 @@
             :class="[
               'transition-all duration-1000 ease-in-out',
               iconSize,
-              colorMode.value === 'dark'
+              isDarkMode
                 ? 'text-yellow-300 rotate-[360deg] scale-110'
                 : 'text-orange-400 rotate-0 scale-100',
             ]"
@@ -60,11 +60,18 @@ export default {
   },
   data() {
     return {
-      colorMode: useColorMode(),
+      colorMode: null,
     };
   },
+  mounted() {
+    this.colorMode = useColorMode();
+  },
   computed: {
+    isDarkMode() {
+      return this.colorMode ? this.colorMode.value === "dark" : false;
+    },
     iconName() {
+      if (!this.colorMode) return "";
       return this.colorMode.value === "dark"
         ? "line-md:sunny-filled-loop-to-moon-filled-loop-transition"
         : "line-md:moon-alt-to-sunny-outline-loop-transition";
@@ -107,6 +114,7 @@ export default {
   },
   methods: {
     toggleColorMode() {
+      if (!this.colorMode) return;
       this.colorMode.preference = this.colorMode.value === "dark" ? "light" : "dark";
     },
   },
