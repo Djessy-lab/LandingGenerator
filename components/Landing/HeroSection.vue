@@ -258,7 +258,6 @@ export default {
 
       const fromClass = `from-${baseColor}`;
       const toClass = `to-${baseColor.replace(/-\d+$/, `-${lighterShade}`)}`;
-      console.log(`bg-gradient-to-b ${fromClass} ${toClass}`);
 
       return `bg-gradient-to-b ${fromClass} ${toClass}`;
     },

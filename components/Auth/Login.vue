@@ -6,7 +6,7 @@
     </h2>
     <input class="rounded-2xl p-2 text-center mb-10 min-w-64 dark:bg-gray-700" v-model="email" type="email"
       id="auth-email" placeholder="Entrez votre email" />
-    <Button :class="min - w - 64" @click="loginWithMagic">
+    <Button @click="loginWithMagic">
       Se connecter
     </Button>
   </div>

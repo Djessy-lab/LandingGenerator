@@ -1,8 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
-
-const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
 dotenv.config({ path: envFile });
 
 export default defineNuxtConfig({
@@ -17,6 +19,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseUrl: process.env.BASE_URL,
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_KEY: process.env.SUPABASE_KEY,
     },
     private: {
       postgresUrl: process.env.POSTGRES_URL,
@@ -42,7 +46,7 @@ export default defineNuxtConfig({
     },
   },
   alias: {
-    '@': './',
+    "@": "./",
   },
   app: {
     head: {

@@ -29,8 +29,9 @@
     </button>
     <main class="flex-1 p-4 dark:bg-gray-900 overflow-y-auto max-h-[100vh]">
       <h3 class="text-2xl font-prompt">
-        Tableau de bord {{ userEmail }}
+        Tableau de bord
       </h3>
+      <p class="text-gray-600 dark:text-gray-300">Connecté en tant que : {{ userEmail }}</p>
       <div v-if="configsView" class="mt-12">
         <p v-if="!userConfigs.length">
           {{ noConfigMessage }}

@@ -29,7 +29,7 @@
 </template>
 <script>
 export default {
-  name: "Home",
+  name: "Page",
   props: {
     titleHero: { type: String, default: "" },
     descriptionHero: { type: String, default: "" },
@@ -40,6 +40,8 @@ export default {
     testimonials: { type: Array, default: () => [] },
     pricing: { type: Array, default: () => [] },
     appName: { type: String, default: "" },
+    configName: { type: String, default: "" },
+    createdAt: { type: String, default: "" },
   },
 };
 </script>

@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="flex items-center">
-      <Button :label="currentValue ? currentValue : 'Choisir'" :level="4" @click="isShowPicker = true" />
+      <Button :label="currentValue ? currentValue : 'Choisir'" :level="4" @click.prevent="isShowPicker = true" />
       <div v-if="currentValue" :class="`ml-4 rounded w-20 h-8 ${currentValue}`"></div>
     </div>
     <Modal size="lg" v-if="isShowPicker" :modelValue="isShowPicker" @update:modelValue="isShowPicker = false"
       title="Palette de couleurs">
       <div class="grid grid-cols-3 max-lg:grid-cols-1 gap-4">
-        <button @click="handleSelectColor(color)" v-for="(color, index) in colorClasses" :key="index"
+        <button @click.prevent="handleSelectColor(color)" v-for="(color, index) in colorClasses" :key="index"
           class="flex items-center flex-col rounded-lg shadow hover:bg-gray-100 hover:shadow-none transition-all duration-300 ease-in-out">
           <div :class="`w-full h-12 rounded-t-lg ${color}`"></div>
-          <span class="pb-1">{{ color}}</span>
+          <span class="pb-1">{{ color.replace('bg-', '') }}</span>
         </button>
       </div>
     </Modal>
