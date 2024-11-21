@@ -6,9 +6,12 @@
     </h2>
     <input class="rounded-2xl p-2 text-center mb-10 min-w-64 dark:bg-gray-700" v-model="email" type="email"
       id="auth-email" placeholder="Entrez votre email" />
-    <Button @click="loginWithMagic">
+    <Button @click="loginWithMagic" v-if="!isLoading">
       Se connecter
     </Button>
+    <span v-if="isLoading" class="flex justify-center">
+      <Icon name="line-md:loading-loop" class="w-10 h-10 text-gray-600 dark:text-slate-700" />
+    </span>
   </div>
 </template>
 
@@ -19,6 +22,7 @@ export default {
   data() {
     return {
       email: "",
+      isLoading: false,
     };
   },
   props: {
@@ -26,6 +30,7 @@ export default {
   },
   methods: {
     async loginWithMagic() {
+      this.isLoading = true
       try {
         const response = await $fetch("/api/auth/login", {
           method: "POST",
@@ -42,6 +47,8 @@ export default {
         }
       } catch (error) {
         console.error("Échec de la connexion:", error);
+      } finally {
+        this.isLoading = false
       }
     },
   },

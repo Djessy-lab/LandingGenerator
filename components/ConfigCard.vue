@@ -3,10 +3,16 @@
     <div class="rounded-lg flex flex-col">
       <OptionsCard @deleteConfig="deleteConfig" @editConfig="editConfig" />
       <button @click="$emit('openConfig', config)"
-        class="hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 shadow-lg w-full rounded-lg hover:shadow-md transition-all duration-500 font-prompt dark:brightness-75 hover:brightness-95">
+        class="hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 shadow-lg w-full rounded-lg hover:shadow-md transition-all duration-500 font-prompt dark:brightness-80 hover:brightness-95">
         <p class="bg-gray-100 dark:bg-gray-800 w-full h-40 flex flex-col justify-center rounded-t-lg"
           v-if="!config.imgHero && !config.imgArg">{{ config.configName }}</p>
-        <img v-else :src="config.imgHero || config.imgArg" class="w-full h-40 object-cover mr-2 rounded-t-lg" />
+          <div v-else class="w-full h-40 overflow-hidden rounded-t-lg">
+          <img
+            :src="config.imgHero || config.imgArg"
+            class="w-full h-full transition-transform duration-500 group-hover:scale-105 rounded-t-lg"
+            alt="Configuration Image"
+          />
+        </div>
         <div class="p-4 border-t">
           <h2 class="flex">Config : {{ config.configName }}</h2>
           <div class="flex">

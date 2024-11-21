@@ -165,7 +165,7 @@ export default {
     toggleConfigsView() {
       this.configsView = true;
       this.newConfigView = false;
-      this.editConfigView = false; 
+      this.editConfigView = false;
     },
     toggleNewConfigView() {
       this.newConfigView = true;

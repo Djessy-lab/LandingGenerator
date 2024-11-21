@@ -65,6 +65,16 @@ export default {
   },
   mounted() {
     this.colorMode = useColorMode();
+
+  },
+  watch: {
+    colorMode: {
+      deep: true,
+      immediate: true,
+      handler(newValue) {
+        this.colorMode = newValue;
+      }
+    }
   },
   computed: {
     isDarkMode() {
