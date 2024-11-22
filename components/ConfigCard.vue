@@ -6,14 +6,14 @@
         class="hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 shadow-lg w-full rounded-lg hover:shadow-md transition-all duration-500 font-prompt dark:brightness-80 hover:brightness-95">
         <p class="bg-gray-100 dark:bg-gray-800 w-full h-40 flex flex-col justify-center rounded-t-lg"
           v-if="!config.imgHero && !config.imgArg">{{ config.configName }}</p>
-          <div v-else class="w-full h-40 overflow-hidden rounded-t-lg">
+          <div v-else class="w-full h-44 overflow-hidden rounded-t-lg">
           <img
             :src="config.imgHero || config.imgArg"
             class="w-full h-full transition-transform duration-500 group-hover:scale-105 rounded-t-lg"
             alt="Configuration Image"
           />
         </div>
-        <div class="p-4 border-t">
+        <div class="p-4 border-t dark:border-gray-700">
           <h2 class="flex">Config : {{ config.configName }}</h2>
           <div class="flex">
             <p>Application : {{ config.appName }}</p>

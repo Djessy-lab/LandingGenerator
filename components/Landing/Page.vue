@@ -1,13 +1,13 @@
 <template>
   <div>
     <LandingHeroSection :imgHero="imgHero" :title="titleHero" :description="descriptionHero"
-      :imgHeroShadow="imgHeroShadow" :imgHeroRounded="imgHeroRounded" :color="color" :appName="appName" />
+      :imgHeroShadow="imgHeroShadow" :imgHeroRounded="imgHeroRounded" :imgHeroPosition="imgHeroPosition" :imgHeroFit="imgHeroFit" :color="color" :appName="appName" />
   </div>
   <div>
     <LandingAdvantages :color="color" :advantages="advantages" :appName="appName" />
   </div>
   <div class="mt-32">
-    <LandingHowItsWorks :imgArg="imgArg" :imgArgShadow="imgArgShadow" :imgArgRounded="imgArgRounded" />
+    <LandingHowItsWorks :imgArg="imgArg" :imgArgShadow="imgArgShadow" :imgArgRounded="imgArgRounded" :imgArgPosition="imgArgPosition" :imgArgFit="imgArgFit" />
   </div>
   <div>
     <LandingPricing :color="color" :pricing="pricing" />
@@ -35,6 +35,10 @@ export default {
     imgHeroRounded: { type: Boolean, default: false },
     imgArgShadow: { type: Boolean, default: false },
     imgArgRounded: { type: Boolean, default: false },
+    imgHeroPosition: { type: String, default: 'center' },
+    imgHeroFit: { type: String, default: 'contain' },
+    imgArgPosition: { type: String, default: 'center' },
+    imgArgFit: { type: String, default: 'contain' },
     advantages: { type: Array, default: () => [] },
     testimonials: { type: Array, default: () => [] },
     pricing: { type: Array, default: () => [] },

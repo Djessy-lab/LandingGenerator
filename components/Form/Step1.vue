@@ -5,57 +5,20 @@
       <div v-for="(value, key) in baseFields" :key="key" class="flex flex-col w-full"
         :class="{ 'md:col-span-2': value.type === 'textarea' }">
         <label class="font-semibold" :for="key">{{ value.label }}:</label>
-        <FileUpload
-          v-if="key === 'imgHero' || key === 'imgArg'"
-          label="Ajouter une image"
-          :initialFile="getFileObject(localConfig[key])"
-          @file-selected="(fileData) => handleFileSelection(key, fileData)"
-        />
-        <div v-if="(key === 'imgHero' || key === 'imgArg') && localConfig[key]" class="flex space-x-4 mt-2">
-          <div class="flex items-center">
-            <input
-              type="checkbox"
-              :id="`shadow-${key}`"
-              v-model="localConfig[`${key}Shadow`]"
-              @change="updateConfig"
-            />
-            <label :for="`shadow-${key}`" class="ml-2">Ajouter une ombre</label>
-          </div>
-          <div class="flex items-center">
-            <input
-              type="checkbox"
-              :id="`rounded-${key}`"
-              v-model="localConfig[`${key}Rounded`]"
-              @change="updateConfig"
-            />
-            <label :for="`rounded-${key}`" class="ml-2">Arrondir les coins</label>
-          </div>
-        </div>
-        <ColorPicker
-          v-else-if="key === 'color'"
-          v-model="localConfig[key]"
-          @update:modelValue="updateConfig"
-        />
-        <input
-          v-else-if="value.type !== 'textarea' && key !== 'imgHero' && key !== 'imgArg'"
-          :id="key"
-          :type="value.type"
-          :placeholder="value.placeholder"
-          class="shadow rounded-lg p-2 mt-1 w-full bg-white dark:bg-slate-700"
-          v-model="localConfig[key]"
-          @input="updateConfig"
-          required
-        />
-        <textarea
-          v-else-if="value.type === 'textarea'"
-          :id="key"
-          :placeholder="value.placeholder"
-          class="shadow rounded-lg p-2 mt-1 w-full bg-white dark:bg-slate-700"
-          v-model="localConfig[key]"
-          @input="updateConfig"
-          required
-          rows="2"
-        ></textarea>
+        <ImageEditor v-if="key === 'imgHero' || key === 'imgArg'" :initialFile="getFileObject(localConfig[key])"
+          :shadow="localConfig[`${key}Shadow`]" :rounded="localConfig[`${key}Rounded`]"
+          :objectPosition="localConfig[`${key}Position`]" :objectFit="localConfig[`${key}Fit`]"
+          @save="(data) => handleImageSave({ ...data, field: key })"
+          @file-selected="(fileData) => handleFileSelection(key, fileData)" />
+        <ColorPicker v-else-if="key === 'color'" v-model="localConfig[key]" @update:modelValue="updateConfig" />
+        <input v-else-if="
+          value.type !== 'textarea' && key !== 'imgHero' && key !== 'imgArg'
+        " :id="key" :type="value.type" :placeholder="value.placeholder"
+          class="shadow rounded-lg p-2 mt-1 w-full bg-white dark:bg-slate-700" v-model="localConfig[key]"
+          @input="updateConfig" required />
+        <textarea v-else-if="value.type === 'textarea'" :id="key" :placeholder="value.placeholder"
+          class="shadow rounded-lg p-2 mt-1 w-full bg-white dark:bg-slate-700" v-model="localConfig[key]"
+          @input="updateConfig" required rows="2"></textarea>
       </div>
     </div>
   </div>
@@ -64,7 +27,7 @@
 <script>
 export default {
   name: "Step1",
-  emits: ['file-selected', 'update-config'],
+  emits: ["file-selected", "update-config"],
   props: {
     config: Object,
     configName: String,
@@ -78,6 +41,10 @@ export default {
         imgHeroRounded: this.config.imgHeroRounded || false,
         imgArgShadow: this.config.imgArgShadow || false,
         imgArgRounded: this.config.imgArgRounded || false,
+        imgHeroPosition: this.config.imgHeroPosition || 'center',
+        imgHeroFit: this.config.imgHeroFit || 'contain',
+        imgArgPosition: this.config.imgArgPosition || 'center',
+        imgArgFit: this.config.imgArgFit || 'contain',
       },
       baseFields: {
         configName: {
@@ -115,17 +82,27 @@ export default {
     };
   },
   methods: {
+    handleImageSave({ file, shadow, rounded, position, fit, field }) {
+      const keyPrefix = field === 'imgHero' ? 'imgHero' : 'imgArg';
+      this.localConfig[`${keyPrefix}`] = file ? file.url : null;
+      this.localConfig[`${keyPrefix}Shadow`] = shadow;
+      this.localConfig[`${keyPrefix}Rounded`] = rounded;
+      this.localConfig[`${keyPrefix}Position`] = position;
+      this.localConfig[`${keyPrefix}Fit`] = fit;
+
+      this.updateConfig(); 
+    },
     getFileObject(url) {
       if (!url) return null;
-      return { name: url.split('/').pop(), url };
+      return { name: url.split("/").pop(), url };
     },
     handleFileSelection(key, { file, fileName }) {
       if (file) {
         this.localConfig[key] = URL.createObjectURL(file);
       } else {
-        this.localConfig[key] = '';
+        this.localConfig[key] = "";
       }
-      this.$emit('file-selected', { key, file, fileName });
+      this.$emit("file-selected", { key, file, fileName });
     },
     updateConfig() {
       this.$emit("update-config", {
