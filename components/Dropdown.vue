@@ -22,6 +22,9 @@
     <div
       v-if="open"
       class="z-10 h-52 overflow-scroll absolute bg-white divide-y divide-gray-100 dark:divide-gray-700 rounded-lg shadow w-full dark:bg-gray-700"
+      @keydown.arrow-down="moveFocus('down')"
+      @keydown.arrow-up="moveFocus('up')"
+      @keydown.enter="selectFocusedOption"
     >
       <input
         v-if="isFiltrable"
@@ -34,12 +37,12 @@
         <li
           v-for="(option, index) in filteredOptions"
           :key="index"
+          tabindex="0"
           @click="selectOption(option)"
           class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
+          ref="option"
         >
-          <button>
-            {{ option.label }}
-          </button>
+          {{ option.label }}
         </li>
       </ul>
     </div>
@@ -60,6 +63,7 @@ export default {
     return {
       open: this.isOpen,
       searchQuery: "",
+      focusIndex: 0,
     };
   },
   watch: {
@@ -70,14 +74,6 @@ export default {
   computed: {
     selectedOption() {
       return this.options.find((option) => option.value === this.modelValue);
-    },
-    buttonClasses() {
-      return `
-        text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none
-        focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5
-        inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700
-        dark:focus:ring-blue-800
-      `;
     },
     filteredOptions() {
       return this.options.filter((option) =>
@@ -98,6 +94,29 @@ export default {
       this.$emit("update:modelValue", option.value);
       this.open = false;
       this.$emit("close");
+    },
+    selectFocusedOption() {
+      const option = this.filteredOptions[this.focusIndex];
+      if (option) {
+        this.selectOption(option);
+      }
+      this.searchQuery = "";
+    },
+    moveFocus(direction) {
+      if (this.filteredOptions.length === 0) return;
+      if (direction === "down") {
+        this.focusIndex = (this.focusIndex + 1) % this.filteredOptions.length;
+      } else if (direction === "up") {
+        this.focusIndex =
+          (this.focusIndex - 1 + this.filteredOptions.length) %
+          this.filteredOptions.length;
+      }
+      this.$nextTick(() => {
+        const focusedItem = this.$refs.option[this.focusIndex];
+        if (focusedItem) {
+          focusedItem.focus();
+        }
+      });
     },
   },
 };

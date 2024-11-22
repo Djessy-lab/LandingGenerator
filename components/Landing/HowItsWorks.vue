@@ -1,5 +1,5 @@
 <template>
-  <div class="sm:w-[100%] lg:w-[50%] h-[20rem] mx-auto rounded-3xl">
+  <div class="sm:w-[100%] lg:w-[60%] h-[25rem] mx-auto rounded-3xl">
     <img :class="imageClass" :src="imgArg" alt="Comment ça marche">
   </div>
 </template>

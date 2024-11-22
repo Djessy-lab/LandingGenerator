@@ -92,8 +92,6 @@ export default {
     async handleFileUpload({ key, file, fileName }) {
       this.pendingUploads[key] = { file, fileName };
       this.config[key] = fileName;
-      console.log(this.config);
-
     },
     async submitForm() {
       this.isLoading = true;

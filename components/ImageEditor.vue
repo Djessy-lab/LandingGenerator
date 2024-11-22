@@ -1,6 +1,6 @@
 <template>
   <Button
-    :title="localFile.name"
+    :title="localFile?.name"
     :label="buttonLabel"
     :level="4"
     @click.prevent="openModal = true"
@@ -13,7 +13,7 @@
     @update:modelValue="closeModal"
     @keydown.esc="closeModal"
   >
-    <div class="flex max-lg:flex-col">
+    <div class="flex max-lg:flex-col p-4">
       <div class="flex flex-col lg:w-[50%]">
         <FileUpload
           label="Ajouter une image"
@@ -57,12 +57,17 @@
           </div>
         </div>
       </div>
-      <div class="lg:w-[50%] h-96 p-10">
+      <div class="lg:w-[50%] h-96 p-10 ml-4">
         <img
           v-if="localFile && localFile.url"
           :src="localFile.url"
           :class="imageClass"
         />
+        <div v-else class="flex flex-col items-center justify-center border dark:border-gray-600" :class="imageClass">
+          <p class="text-center text-sm">
+            Aucun fichier sélectionné
+          </p>
+        </div>
       </div>
     </div>
     <div class="flex justify-end mt-6">

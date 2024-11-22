@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="flex mt-2" v-if="file">
-    <p class="text-xs text-gray-500 dark:text-gray-400">{{ file.name }}</p>
+    <p class="text-xs text-gray-500 dark:text-gray-400">{{ file.name || file.fileName }}</p>
     <Icon name="line-md:remove" class="h-4 w-4 ml-2 cursor-pointer" @click.prevent="removeFile" />
   </div>
 </template>

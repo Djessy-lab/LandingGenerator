@@ -1,7 +1,7 @@
 <template>
   <div class="relative group">
     <div class="rounded-lg flex flex-col">
-      <OptionsCard @deleteConfig="deleteConfig" @editConfig="editConfig" />
+      <OptionsCard v-if="hasOptionsCard" @deleteConfig="deleteConfig" @editConfig="editConfig" />
       <button @click="$emit('openConfig', config)"
         class="hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 shadow-lg w-full rounded-lg hover:shadow-md transition-all duration-500 font-prompt dark:brightness-80 hover:brightness-95">
         <p class="bg-gray-100 dark:bg-gray-800 w-full h-40 flex flex-col justify-center rounded-t-lg"
@@ -10,6 +10,7 @@
           <img
             :src="config.imgHero || config.imgArg"
             class="w-full h-full transition-transform duration-500 group-hover:scale-105 rounded-t-lg"
+            :class="`object-${config.imgHeroFit}`"
             alt="Configuration Image"
           />
         </div>
@@ -38,6 +39,7 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    hasOptionsCard: { type: Boolean, default: false },
   },
   computed: {
     formattedCreatedAt() {
