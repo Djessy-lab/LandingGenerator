@@ -1,5 +1,5 @@
 <template>
-  <button :class="buttonClasses">
+  <button :class="buttonClasses" :title="title ? title : label">
     {{ label }}
     <slot />
   </button>
@@ -13,6 +13,7 @@ export default {
       type: String,
       default: ""
     },
+    title: { type: String, default: "" },
     level: {
       type: Number,
       default: 1

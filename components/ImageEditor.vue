@@ -1,55 +1,88 @@
 <template>
-  <div>
-    <Button label="Ajouter une image" :level="4" @click.prevent="openModal = true" />
-    <Modal v-if="openModal" :modelValue="openModal" @update:modelValue="openModal = false" title="Ajouter une image"
-      size="xl">
-      <div class="flex">
-        <div class="flex flex-col w-[50%]">
-          <FileUpload label="Ajouter une image" :initialFile="localFile" @file-selected="handleFileSelection" />
-          <div class="flex space-x-4 mt-4">
-            <div class="flex items-center">
-              <input type="checkbox" id="shadow-option" v-model="localShadow" />
-              <label for="shadow-option" class="ml-2">Ajouter une ombre</label>
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" id="rounded-option" v-model="localRounded" />
-              <label for="rounded-option" class="ml-2">Arrondir les coins</label>
-            </div>
-            <div class="flex flex-col w-full">
-              <label for="object-fit" class="mb-1">Object Fit</label>
-              <select id="object-fit" v-model="localObjectFit" class="w-full border rounded px-2 py-1">
-                <option v-for="fit in objectFitOptions" :key="fit" :value="fit">
-                  {{ fit }}
-                </option>
-              </select>
-            </div>
-            <div class="flex flex-col w-full">
-              <label for="object-position" class="mb-1">Object Position</label>
-              <select id="object-position" v-model="localObjectPosition" class="w-full border rounded px-2 py-1">
-                <option v-for="position in objectPositionOptions" :key="position" :value="position">
-                  {{ position }}
-                </option>
-              </select>
-            </div>
+  <Button
+    :title="localFile.name"
+    :label="buttonLabel"
+    :level="4"
+    @click.prevent="openModal = true"
+  />
+  <Modal
+    v-if="openModal"
+    :modelValue="openModal"
+    title="Éditer une image"
+    size="xl"
+    @update:modelValue="closeModal"
+    @keydown.esc="closeModal"
+  >
+    <div class="flex max-lg:flex-col">
+      <div class="flex flex-col lg:w-[50%]">
+        <FileUpload
+          label="Ajouter une image"
+          :initialFile="localFile"
+          @file-selected="handleFileSelection"
+        />
+        <div class="flex space-x-4 mt-4">
+          <div class="flex items-center">
+            <input type="checkbox" id="shadow-option" v-model="localShadow" />
+            <label for="shadow-option" class="ml-2">Ajouter une ombre</label>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="rounded-option" v-model="localRounded" />
+            <label for="rounded-option" class="ml-2">Arrondir les coins</label>
           </div>
         </div>
-        <div class="w-[50%] h-96 p-10">
-          <img v-if="localFile && localFile.url" :src="localFile.url" :class="imageClass" />
+        <div class="flex gap-4 mt-4">
+          <div class="flex flex-col w-full">
+            <label class="mb-1">Fit</label>
+            <Dropdown
+              :label="'Sélectionner un ajustement'"
+              :options="objectFitOptions"
+              v-model="localObjectFit"
+              :isOpen="openDropdown === 'fit'"
+              isFiltrable
+              @close="openDropdown = null"
+              @open="openDropdown = 'fit'"
+            />
+          </div>
+          <div class="flex flex-col w-full">
+            <label class="mb-1">Position</label>
+            <Dropdown
+              :label="'Sélectionner une position'"
+              :options="objectPositionOptions"
+              v-model="localObjectPosition"
+              :isOpen="openDropdown === 'position'"
+              isFiltrable
+              @close="openDropdown = null"
+              @open="openDropdown = 'position'"
+            />
+          </div>
         </div>
       </div>
-      <div class="flex justify-end mt-6">
-        <Button label="Enregistrer" :level="1" @click.prevent="save" />
-        <Button label="Annuler" :level="3" class="ml-4" @click.prevent="closeModal" />
+      <div class="lg:w-[50%] h-96 p-10">
+        <img
+          v-if="localFile && localFile.url"
+          :src="localFile.url"
+          :class="imageClass"
+        />
       </div>
-    </Modal>
-  </div>
+    </div>
+    <div class="flex justify-end mt-6">
+      <Button label="Enregistrer" :level="1" @click.prevent="save" />
+      <Button
+        label="Annuler"
+        :level="3"
+        class="ml-4"
+        @click.prevent="closeModal"
+      />
+    </div>
+  </Modal>
 </template>
 
 <script>
 export default {
   name: "ImageEditor",
-  emits: ["save", "close"],
+  emits: ["save", "close", "file-selected"],
   props: {
+    buttonLabel: { type: String, default: "Ajouter une image" },
     initialFile: {
       type: Object,
       default: null,
@@ -64,23 +97,45 @@ export default {
     },
     objectPosition: {
       type: String,
-      default: 'center',
+      default: "center",
     },
     objectFit: {
       type: String,
-      default: 'contain',
+      default: "contain",
     },
   },
   data() {
     return {
       openModal: false,
-      localFile: this.initialFile ? { ...this.initialFile, url: this.initialFile.url || URL.createObjectURL(this.initialFile) } : null,
+      localFile: this.initialFile
+        ? {
+            ...this.initialFile,
+            url: this.initialFile.url || URL.createObjectURL(this.initialFile),
+          }
+        : null,
       localShadow: this.shadow,
       localRounded: this.rounded,
       localObjectFit: this.objectFit,
       localObjectPosition: this.objectPosition,
-      objectPositions: ['object-center', 'object-top', 'object-bottom', 'object-left', 'object-right', 'object-left-top', 'object-right-top', 'object-left-bottom', 'object-right-bottom'],
-      objectFits: ['object-cover', 'object-contain', 'object-fill', 'object-none', 'object-scale-down'],
+      objectPositions: [
+        "object-center",
+        "object-top",
+        "object-bottom",
+        "object-left",
+        "object-right",
+        "object-left-top",
+        "object-right-top",
+        "object-left-bottom",
+        "object-right-bottom",
+      ],
+      objectFits: [
+        "object-cover",
+        "object-contain",
+        "object-fill",
+        "object-none",
+        "object-scale-down",
+      ],
+      openDropdown: null,
     };
   },
   computed: {
@@ -90,31 +145,40 @@ export default {
       if (this.localRounded) classes += " rounded-2xl";
       return classes;
     },
-    objectPositionOptions() {
-      return this.objectPositions.map(object => object.replace('object-', ''));
-    },
     objectFitOptions() {
-      return this.objectFits.map(object => object.replace('object-', ''));
+      return this.objectFits.map((fit) => ({
+        label: fit.replace("object-", ""),
+        value: fit.replace("object-", ""),
+      }));
+    },
+    objectPositionOptions() {
+      return this.objectPositions.map((position) => ({
+        label: position.replace("object-", ""),
+        value: position.replace("object-", ""),
+      }));
     },
   },
   methods: {
     handleFileSelection(fileData) {
-  if (fileData.file) {
-    this.localFile = { ...fileData, url: URL.createObjectURL(fileData.file) };
+      if (fileData.file) {
+        this.localFile = {
+          ...fileData,
+          url: URL.createObjectURL(fileData.file),
+        };
 
-    this.$emit('file-selected', {
-      file: fileData.file,
-      options: {
-        shadow: this.localShadow,
-        rounded: this.localRounded,
-        position: this.localObjectPosition,
-        fit: this.localObjectFit
+        this.$emit("file-selected", {
+          file: fileData.file,
+          options: {
+            shadow: this.localShadow,
+            rounded: this.localRounded,
+            position: this.localObjectPosition,
+            fit: this.localObjectFit,
+          },
+        });
+      } else {
+        this.localFile = null;
       }
-    });
-  } else {
-    this.localFile = null;
-  }
-},
+    },
     save() {
       this.$emit("save", {
         file: this.localFile,
@@ -128,6 +192,10 @@ export default {
     closeModal() {
       this.openModal = false;
       this.$emit("close");
+      this.closeDropdown()
+    },
+    closeDropdown() {
+      this.openDropdown = null;
     },
   },
 };
