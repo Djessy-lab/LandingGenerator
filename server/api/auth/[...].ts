@@ -6,6 +6,7 @@ const runtimeConfig = useRuntimeConfig()
 export default NuxtAuthHandler({
   pages: {
     signIn: '/login'
+    
   },
   providers: [
     GithubProvider.default({
