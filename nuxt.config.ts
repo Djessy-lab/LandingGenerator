@@ -15,12 +15,18 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "nuxt-lucide-icons",
     "@nuxt/icon",
+    '@sidebase/nuxt-auth'
   ],
+  auth: {
+    enableGlobalAppMiddleware: true,
+  },
   runtimeConfig: {
+    GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     public: {
       baseUrl: process.env.BASE_URL,
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
+      GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     },
     private: {
       postgresUrl: process.env.POSTGRES_URL,
