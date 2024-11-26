@@ -26,6 +26,9 @@ async function fetchUserConfigs(userId) {
 }
 
 onMounted(async () => {
+  console.log(process.env.AUTH_SECRET);
+  console.log(process.env.AUTH_ORIGIN);
+
   try {
     const response = await $fetch("/api/auth/getUser", {
       headers: {
