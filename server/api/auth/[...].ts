@@ -4,9 +4,10 @@ import GithubProvider from 'next-auth/providers/github'
 const runtimeConfig = useRuntimeConfig()
 
 export default NuxtAuthHandler({
+  
   pages: {
     signIn: '/login'
-    
+
   },
   providers: [
     GithubProvider.default({
