@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     '@sidebase/nuxt-auth'
   ],
   auth: {
+    origin: process.env.AUTH_ORIGIN,
     enableGlobalAppMiddleware: true,
   },
   runtimeConfig: {
