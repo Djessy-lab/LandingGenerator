@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     secret: process.env.AUTH_SECRET,
     origin: process.env.AUTH_ORIGIN,
     enableGlobalAppMiddleware: true,
+    baseURL: 'https://landing-generator-brown.vercel.app/api/auth'
   },
   runtimeConfig: {
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
