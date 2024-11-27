@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import ThemeToggle from "~/components/ThemeToggle.vue";
 
 export default {
   name: "Login",
