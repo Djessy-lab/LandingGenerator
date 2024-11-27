@@ -4,7 +4,12 @@ import { supabase } from '~/utils/supabase';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    const { email } = body;
+    const { email, provider } = body;
+
+    if (provider === 'github') {
+        const redirectUrl = `${process.env.BASE_URL}/api/auth/[...].ts?provider=github`;
+        return { status: 302, location: redirectUrl };
+    }
 
     if (!email) {
         return { status: 400, message: 'L\'email est requis.' };

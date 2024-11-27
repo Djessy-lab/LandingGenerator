@@ -64,11 +64,8 @@ const isLoading = ref(false);
 const { signIn } = useAuth();
 
 async function handleSignIn(provider: string) {
-  try {
+  if (provider === 'github') {
     await signIn(provider, { callbackUrl: '/' });
-  } catch (error) {
-    console.error('Erreur lors de la connexion avec GitHub:', error);
-    alert('Une erreur est survenue lors de la connexion GitHub.');
   }
 }
 
