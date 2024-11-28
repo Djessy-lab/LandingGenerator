@@ -6,9 +6,10 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const { email, provider } = body;
 
+
     if (provider === 'github') {
-        const redirectUrl = `${process.env.BASE_URL}/api/auth/[...].ts?provider=github`;
-        return { status: 302, location: redirectUrl };
+        const redirectUrl = `https://landing-generator-brown.vercel.app/api/auth/[...].ts?provider=github`;
+        return { status: 200, location: redirectUrl };
     }
 
     if (!email) {
