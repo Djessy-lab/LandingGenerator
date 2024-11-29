@@ -56,7 +56,7 @@ export default {
         });
 
         if (response.status === 302) {
-          window.location.href = response.location;
+          // window.location.href = response.location;
           console.log(response.location);
 
         } else {

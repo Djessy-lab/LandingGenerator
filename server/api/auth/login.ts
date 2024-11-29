@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const { email, provider } = body;
 
+
     if (provider === 'github') {
         return { status: 302, location: '/api/auth/signin/github' };
     }

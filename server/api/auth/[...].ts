@@ -7,7 +7,7 @@ const runtimeConfig = useRuntimeConfig()
 export default NuxtAuthHandler({
   secret: runtimeConfig.authSecret,
   pages: {
-    signIn: '/login',
+    signIn: '/',
     error: '/login'
   },
   providers: [
