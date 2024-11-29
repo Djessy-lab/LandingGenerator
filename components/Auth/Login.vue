@@ -13,7 +13,7 @@
     <h2 class="text-center text-2xl mb-10 font-prompt">
       Ou connectez-vous avec GitHub
     </h2>
-    <Button @click="handleSignIn('github')" :level="4">
+    <Button @click="loginWithGitHub" :level="4">
       Se connecter avec GitHub
     </Button>
   </div>
@@ -48,20 +48,10 @@ export default {
         console.error("Échec de la connexion:", error);
       }
     },
-    async handleSignIn(provider) {
+    async loginWithGitHub() {
+      const { signIn } = useAuth();
       try {
-        const response = await $fetch(`/api/auth/login`, {
-          method: 'POST',
-          body: { provider },
-        });
-
-        if (response.status === 302) {
-          window.location.href = response.location;
-          console.log(response.location);
-
-        } else {
-          console.error("Erreur lors de la connexion avec GitHub:", response.message);
-        }
+        await signIn('github');
       } catch (error) {
         console.error("Erreur lors de la connexion avec GitHub:", error);
       }
