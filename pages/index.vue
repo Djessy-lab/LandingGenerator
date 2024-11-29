@@ -9,7 +9,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useAuth } from '@sidebase/nuxt-auth';
 
 const userEmail = ref(null);
 const userId = ref(null);
