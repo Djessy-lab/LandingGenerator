@@ -14,7 +14,7 @@ export default NuxtAuthHandler({
     GithubProvider.default({
       clientId: runtimeConfig.public.GITHUB_CLIENT_ID,
       clientSecret: runtimeConfig.GITHUB_CLIENT_SECRET,
-      async profile(profile) {
+      async profile(profile: { email: any; name: any; }) {
         const { data: user, error } = await supabase
           .from('users')
           .select('*')
@@ -24,7 +24,7 @@ export default NuxtAuthHandler({
         if (!user) {
           const { error: insertError } = await supabase
             .from('users')
-            .insert([{ email: profile.email }]);
+            .insert([{ email: profile.email, name: profile.name }]);
 
           if (insertError) {
             console.error('Erreur lors de l\'insertion de l\'utilisateur:', insertError.message);
@@ -32,7 +32,7 @@ export default NuxtAuthHandler({
           }
         }
 
-        return profile;
+        return { email: profile.email, name: profile.name };
       }
     }),
   ],
