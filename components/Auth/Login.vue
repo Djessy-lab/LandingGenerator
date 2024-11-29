@@ -14,7 +14,7 @@
       Ou connectez-vous avec GitHub
     </h2>
     <Button @click="handleSignIn('github')" :level="4">
- Se connecter avec GitHub
+      Se connecter avec GitHub
     </Button>
   </div>
 </template>
@@ -55,9 +55,10 @@ export default {
           body: { provider },
         });
 
-        if (response.status === 200) {
-          localStorage.setItem("token", response.token);
-          window.location.href = "/";
+        if (response.status === 302) {
+          window.location.href = response.location;
+          console.log(response.location);
+
         } else {
           console.error("Erreur lors de la connexion avec GitHub:", response.message);
         }
