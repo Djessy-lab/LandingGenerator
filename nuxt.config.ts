@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     authSecret: process.env.AUTH_SECRET,
     public: {
-      baseUrl: process.env.BASE_URL,
+URL,
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
       GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
