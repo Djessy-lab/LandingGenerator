@@ -6,9 +6,7 @@
     </h2>
     <input class="rounded-2xl p-2 text-center mb-10 min-w-64 dark:bg-gray-700" v-model="email" type="email"
       id="auth-email" placeholder="Entrez votre email" />
-    <Button @click="loginWithMagic">
-      Se connecter
-    </Button>
+    <Button @click="loginWithMagic"> Se connecter </Button>
 
     <h2 class="text-center text-2xl mb-10 font-prompt">
       Ou connectez-vous avec GitHub
@@ -50,12 +48,17 @@ export default {
     },
     async loginWithGitHub() {
       const { signIn } = useAuth();
+      const baseUrl = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000'
+        : 'https://landing-generator-brown.vercel.app';
       try {
-        await signIn('github');
+        await signIn("github", {
+          callbackUrl: `${baseUrl}/`,
+        });
       } catch (error) {
         console.error("Erreur lors de la connexion avec GitHub:", error);
       }
-    }
+    },
   },
 };
 </script>

@@ -5,7 +5,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+
+const { data: authData } = useAuth()
 
 const userEmail = ref(null);
 const userId = ref(null);
@@ -25,25 +27,40 @@ async function fetchUserConfigs(userId) {
   }
 }
 
-onMounted(async () => {
+async function registerUser(userData) {
   try {
-    const response = await $fetch("/api/auth/getUser", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+    const response = await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: {
+        user: {
+          email: userData.email,
+          name: userData.name,
+          image: userData.image,
+          provider: 'github'
+        }
+      }
     });
-
-    if (response.status === 200) {
-      userEmail.value = response.email;
-      userId.value = response.userId;
-      userConfigs.value = await fetchUserConfigs(userId.value);
-    } else {
-      console.error("Erreur lors de la récupération de l'utilisateur:", response.message);
-    }
+    return response;
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'utilisateur:", error);
+    console.error('Erreur lors de l\'enregistrement:', error);
+    throw error;
   }
-});
+}
+
+watch(authData, async (newAuthData) => {
+  if (newAuthData?.user) {
+    try {
+      const response = await registerUser(newAuthData.user);
+      if (response.status === 200) {
+        userEmail.value = newAuthData.user.email;
+        userId.value = response.userId;
+        userConfigs.value = await fetchUserConfigs(userId.value);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement de l'utilisateur:", error);
+    }
+  }
+}, { immediate: true });
 
 definePageMeta({
   middleware: "auth",

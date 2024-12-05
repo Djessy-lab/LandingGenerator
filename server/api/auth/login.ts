@@ -4,20 +4,16 @@ import { supabase } from '~/utils/supabase';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    const { email, provider } = body;
 
+    const userData = body.user || body;
 
-    if (provider === 'github') {
-        return { status: 302, location: '/api/auth/signin/github' };
-    }
+    const { email, name, image } = userData;
 
     if (!email) {
         return { status: 400, message: 'L\'email est requis.' };
     }
 
     try {
-        const token = await sendMagicLink(email);
-
         const { data: existingUser, error: fetchError } = await supabase
             .from('users')
             .select('*')
@@ -30,19 +26,38 @@ export default defineEventHandler(async (event) => {
         }
 
         if (!existingUser) {
-            const { error: insertError } = await supabase
+            const { data: insertedUser, error: insertError } = await supabase
                 .from('users')
-                .insert([{ email }]);
+                .insert([{
+                    email,
+                    name,
+                    image,
+                    created_at: new Date().toISOString()
+                }])
+                .select()
+                .single();
 
             if (insertError) {
                 console.error('Erreur lors de l\'insertion de l\'utilisateur:', insertError.message);
                 throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
             }
+
+            console.log('Utilisateur inséré:', insertedUser);
+            return {
+                status: 200,
+                message: 'Utilisateur synchronisé avec succès.',
+                userId: insertedUser.id
+            };
         }
 
-        return { status: 200, message: 'Lien magique envoyé.', token };
+        return {
+            status: 200,
+            message: 'Utilisateur synchronisé avec succès.',
+            userId: existingUser.id
+        };
+
     } catch (error) {
-        console.error('Erreur lors de l\'envoi du lien magique:', error);
-        return { status: 500, message: 'Erreur lors de l\'envoi du lien magique.' };
+        console.error('Erreur:', error);
+        return { status: 500, message: 'Une erreur est survenue.' };
     }
 });

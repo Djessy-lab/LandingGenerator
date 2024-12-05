@@ -14,44 +14,8 @@ export default NuxtAuthHandler({
     GithubProvider.default({
       clientId: runtimeConfig.public.GITHUB_CLIENT_ID,
       clientSecret: runtimeConfig.GITHUB_CLIENT_SECRET,
-      async profile(profile: { email: any; name: any; }) {
-        const { data: user, error } = await supabase
-          .from('users')
-          .select('*')
-          .eq('email', profile.email)
-          .single();
-
-        if (!user) {
-          const { error: insertError } = await supabase
-            .from('users')
-            .insert([{ email: profile.email, name: profile.name }]);
-
-          if (insertError) {
-            console.error('Erreur lors de l\'insertion de l\'utilisateur:', insertError.message);
-            throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
-          }
-        }
-
-        return { email: profile.email, name: profile.name };
-      }
-    }),
+    })
   ],
-  cookies: {
-    sessionToken: {
-      name: 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      },
-    },
-    callbackUrl: {
-      name: 'next-auth.callback-url',
-      options: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      },
-    },
-  },
-});
+  basePath: '/api/auth',
+  baseUrl: runtimeConfig.public.authOrigin
+})
