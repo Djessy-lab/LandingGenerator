@@ -35,12 +35,10 @@ async function registerUser(userData) {
     const response = await $fetch("/api/auth/login", {
       method: "POST",
       body: {
-        user: {
-          email: userData.email,
-          name: userData.name,
-          image: userData.image,
-          provider: "github",
-        },
+        email: userData.email,
+        name: userData.name,
+        image: userData.image,
+        provider: userData.provider
       },
     });
     return response;
@@ -74,7 +72,6 @@ async function checkMagicLinkAuth() {
   }
 }
 
-// Gestion de l'authentification Github
 watch(
   authData,
   async (newAuthData) => {
@@ -94,7 +91,6 @@ watch(
   { immediate: true }
 );
 
-// Vérification du magic link à l'initialisation
 onMounted(async () => {
   if (!authData.value?.user) {
     await checkMagicLinkAuth();

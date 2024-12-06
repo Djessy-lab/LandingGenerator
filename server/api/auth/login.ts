@@ -5,11 +5,10 @@ import { supabase } from '~/utils/supabase';
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
-    const isGithubAuth = body.user || (body.name && body.image);
+    const isOAuthAuth = body.email && (body.name || body.image || body.provider);
 
-    if (isGithubAuth) {
-        const userData = body.user || body;
-        const { email, name, image } = userData;
+    if (isOAuthAuth) {
+        const { email, name, image, provider } = body;
 
         if (!email) {
             return { status: 400, message: 'L\'email est requis.' };
@@ -33,17 +32,20 @@ export default defineEventHandler(async (event) => {
                         email,
                         name,
                         image,
-                        auth_type: 'github',
+                        auth_type: provider || 'oauth',
                         created_at: new Date().toISOString()
                     }])
                     .select()
                     .single();
 
-                if (insertError) throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
+                if (insertError) {
+                    console.error('Erreur d\'insertion:', insertError);
+                    throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
+                }
 
                 return {
                     status: 200,
-                    message: 'Utilisateur synchronisé avec succès.',
+                    message: 'Utilisateur créé avec succès.',
                     userId: insertedUser.id
                 };
             }

@@ -11,15 +11,18 @@ export default NuxtAuthHandler({
     error: "/login",
   },
   providers: [
+    // @ts-ignore
     GithubProvider.default({
       clientId: runtimeConfig.public.GITHUB_CLIENT_ID,
       clientSecret: runtimeConfig.GITHUB_CLIENT_SECRET,
     }),
+    // @ts-ignore
     GoogleProvider.default({
       clientId: runtimeConfig.public.GOOGLE_CLIENT_ID,
       clientSecret: runtimeConfig.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  // @ts-ignore
   basePath: "/api/auth",
   baseUrl: runtimeConfig.public.authOrigin,
 });

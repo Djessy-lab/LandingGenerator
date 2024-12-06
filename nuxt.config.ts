@@ -15,9 +15,10 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "nuxt-lucide-icons",
     "@nuxt/icon",
-    '@sidebase/nuxt-auth'
+    "@sidebase/nuxt-auth",
   ],
   auth: {
+    //@ts-ignore
     secret: process.env.AUTH_SECRET,
     origin: process.env.AUTH_ORIGIN,
     enableGlobalAppMiddleware: true,
@@ -27,7 +28,8 @@ export default defineNuxtConfig({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     authSecret: process.env.AUTH_SECRET,
     public: {
-URL,
+      // @ts-ignore
+      URL,
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
       GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
