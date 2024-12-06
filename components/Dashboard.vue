@@ -51,10 +51,17 @@
       />
     </button>
     <main class="flex-1 p-4 dark:bg-gray-900 overflow-y-auto max-h-[100vh]">
+    <div class="w-full flex justify-between">
+    <div>
       <h3 class="text-2xl font-prompt">Tableau de bord</h3>
       <p class="text-gray-600 dark:text-gray-300">
         Connecté en tant que : {{ userEmail }}
       </p>
+    </div>
+    <div>
+      <img v-if="userImage" :src="userImage" class="rounded-full w-10 h-10 mr-4" alt="Avatar">
+    </div>
+    </div>
       <div v-if="configsView" class="mt-10">
         <p v-if="!userConfigs.length">
           {{ noConfigMessage }}
@@ -136,6 +143,7 @@ export default {
   props: {
     userEmail: { type: String, default: null },
     userId: { type: Number, default: null },
+    userImage: { type: String, default: null },
     userConfigs: { type: Array, default: () => [] },
   },
   mounted() {

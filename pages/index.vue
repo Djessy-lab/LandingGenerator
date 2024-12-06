@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dashboard :user-email="userEmail" :user-id="userId" :user-configs="userConfigs" />
+    <Dashboard :user-email="userEmail" :user-id="userId" :user-image="userImage" :user-configs="userConfigs" />
   </div>
 </template>
 
@@ -11,6 +11,7 @@ const { data: authData } = useAuth();
 
 const userEmail = ref(null);
 const userId = ref(null);
+const userImage = ref(null);
 const userConfigs = ref([]);
 
 async function fetchUserConfigs(userId) {
@@ -81,6 +82,7 @@ watch(
         if (response.status === 200) {
           userEmail.value = newAuthData.user.email;
           userId.value = response.userId;
+          userImage.value = newAuthData.user.image;
           userConfigs.value = await fetchUserConfigs(userId.value);
         }
       } catch (error) {
