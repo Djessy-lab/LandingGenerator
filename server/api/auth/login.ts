@@ -5,59 +5,94 @@ import { supabase } from '~/utils/supabase';
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
-    const userData = body.user || body;
+    const isGithubAuth = body.user || (body.name && body.image);
 
-    const { email, name, image } = userData;
+    if (isGithubAuth) {
+        const userData = body.user || body;
+        const { email, name, image } = userData;
 
-    if (!email) {
-        return { status: 400, message: 'L\'email est requis.' };
-    }
-
-    try {
-        const { data: existingUser, error: fetchError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('email', email)
-            .single();
-
-        if (fetchError && fetchError.code !== 'PGRST116') {
-            console.error('Erreur lors de la récupération de l\'utilisateur:', fetchError.message);
-            throw new Error('Erreur lors de la récupération de l\'utilisateur');
+        if (!email) {
+            return { status: 400, message: 'L\'email est requis.' };
         }
 
-        if (!existingUser) {
-            const { data: insertedUser, error: insertError } = await supabase
+        try {
+            const { data: existingUser, error: fetchError } = await supabase
                 .from('users')
-                .insert([{
-                    email,
-                    name,
-                    image,
-                    created_at: new Date().toISOString()
-                }])
-                .select()
+                .select('*')
+                .eq('email', email)
                 .single();
 
-            if (insertError) {
-                console.error('Erreur lors de l\'insertion de l\'utilisateur:', insertError.message);
-                throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
+            if (fetchError && fetchError.code !== 'PGRST116') {
+                throw new Error('Erreur lors de la récupération de l\'utilisateur');
             }
 
-            console.log('Utilisateur inséré:', insertedUser);
+            if (!existingUser) {
+                const { data: insertedUser, error: insertError } = await supabase
+                    .from('users')
+                    .insert([{
+                        email,
+                        name,
+                        image,
+                        auth_type: 'github',
+                        created_at: new Date().toISOString()
+                    }])
+                    .select()
+                    .single();
+
+                if (insertError) throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
+
+                return {
+                    status: 200,
+                    message: 'Utilisateur synchronisé avec succès.',
+                    userId: insertedUser.id
+                };
+            }
+
             return {
                 status: 200,
                 message: 'Utilisateur synchronisé avec succès.',
-                userId: insertedUser.id
+                userId: existingUser.id
             };
+        } catch (error) {
+            console.error('Erreur:', error);
+            return { status: 500, message: 'Une erreur est survenue.' };
+        }
+    } else {
+        const { email } = body;
+
+        if (!email) {
+            return { status: 400, message: 'L\'email est requis.' };
         }
 
-        return {
-            status: 200,
-            message: 'Utilisateur synchronisé avec succès.',
-            userId: existingUser.id
-        };
+        try {
+            const token = await sendMagicLink(email);
 
-    } catch (error) {
-        console.error('Erreur:', error);
-        return { status: 500, message: 'Une erreur est survenue.' };
+            const { data: existingUser, error: fetchError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('email', email)
+                .single();
+
+            if (fetchError && fetchError.code !== 'PGRST116') {
+                throw new Error('Erreur lors de la récupération de l\'utilisateur');
+            }
+
+            if (!existingUser) {
+                const { error: insertError } = await supabase
+                    .from('users')
+                    .insert([{
+                        email,
+                        auth_type: 'magic_link',
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (insertError) throw new Error('Erreur lors de l\'insertion de l\'utilisateur');
+            }
+
+            return { status: 200, message: 'Lien magique envoyé.', token };
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi du lien magique:', error);
+            return { status: 500, message: 'Erreur lors de l\'envoi du lien magique.' };
+        }
     }
 });

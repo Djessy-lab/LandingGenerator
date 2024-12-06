@@ -8,12 +8,17 @@
       id="auth-email" placeholder="Entrez votre email" />
     <Button @click="loginWithMagic"> Se connecter </Button>
 
-    <h2 class="text-center text-2xl mb-10 font-prompt">
-      Ou connectez-vous avec GitHub
+    <h2 class="text-center text-2xl mt-10 mb-10 font-prompt">
+      Ou connectez-vous avec
     </h2>
-    <Button @click="loginWithGitHub" :level="4">
-      Se connecter avec GitHub
-    </Button>
+    <div class="flex flex-col gap-4">
+      <Button @click="loginWithGitHub" :level="4">
+        Se connecter avec GitHub
+      </Button>
+      <Button @click="loginWithGoogle" :level="4">
+        Se connecter avec Google
+      </Button>
+    </div>
   </div>
 </template>
 
@@ -57,6 +62,19 @@ export default {
         });
       } catch (error) {
         console.error("Erreur lors de la connexion avec GitHub:", error);
+      }
+    },
+    async loginWithGoogle() {
+      const { signIn } = useAuth();
+      const baseUrl = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000'
+        : 'https://landing-generator-brown.vercel.app';
+      try {
+        await signIn("google", {
+          callbackUrl: `${baseUrl}/`,
+        });
+      } catch (error) {
+        console.error("Erreur lors de la connexion avec Google:", error);
       }
     },
   },

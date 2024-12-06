@@ -24,12 +24,14 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     authSecret: process.env.AUTH_SECRET,
     public: {
 URL,
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
       GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     },
     private: {
       postgresUrl: process.env.POSTGRES_URL,
