@@ -1,23 +1,29 @@
 <template>
   <div
-    class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-600 transition-colors duration-500">
-    <h2 class="text-center text-2xl mb-10 font-prompt">
-      Se connecter avec un lien magique 🪄
-    </h2>
-    <input class="rounded-2xl p-2 text-center mb-10 min-w-64 dark:bg-gray-700" v-model="email" type="email"
-      id="auth-email" placeholder="Entrez votre email" />
-    <Button @click="loginWithMagic"> Se connecter </Button>
-
-    <h2 class="text-center text-2xl mt-10 mb-10 font-prompt">
-      Ou connectez-vous avec
-    </h2>
+    class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-800 transition-colors duration-500"
+  >
+  <h2 class="text-center text-2xl mb-8 font-prompt">Se connecter avec</h2>
     <div class="flex flex-col gap-4">
       <Button @click="loginWithGitHub" :level="4">
-        Se connecter avec GitHub
+        <Icon name="line-md:github-loop" class="h-5 w-5 mr-4 items-center" />
+        GitHub
       </Button>
       <Button @click="loginWithGoogle" :level="4">
-        Se connecter avec Google
+        <Icon name="devicon:google" class="h-5 w-5 mr-4 items-center" />
+        Google
       </Button>
+      <div class="border-b-2 border-gray-200 dark:border-gray-700 mt-8" />
+      <h3 class="text-center text-2xl mt-10 font-prompt">
+        Ou connectez-vous avec un lien magique 🪄
+      </h3>
+      <input
+        class="rounded-2xl p-2 text-center mb-4 min-w-64 dark:bg-gray-700"
+        v-model="email"
+        type="email"
+        id="auth-email"
+        placeholder="Entrez votre email"
+      />
+      <Button @click="loginWithMagic"> Se connecter </Button>
     </div>
   </div>
 </template>
@@ -53,9 +59,10 @@ export default {
     },
     async loginWithGitHub() {
       const { signIn } = useAuth();
-      const baseUrl = process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : 'https://landing-generator-brown.vercel.app';
+      const baseUrl =
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:3000"
+          : "https://landing-generator-brown.vercel.app";
       try {
         await signIn("github", {
           callbackUrl: `${baseUrl}/`,
@@ -66,9 +73,10 @@ export default {
     },
     async loginWithGoogle() {
       const { signIn } = useAuth();
-      const baseUrl = process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : 'https://landing-generator-brown.vercel.app';
+      const baseUrl =
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:3000"
+          : "https://landing-generator-brown.vercel.app";
       try {
         await signIn("google", {
           callbackUrl: `${baseUrl}/`,

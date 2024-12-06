@@ -95,11 +95,17 @@ watch(
 
 onMounted(async () => {
   if (!authData.value?.user) {
-    await checkMagicLinkAuth();
+    const isAuthenticated = await checkMagicLinkAuth();
+    if (!isAuthenticated) {
+      navigateTo('/login');
+    }
   }
 });
 
 definePageMeta({
-  middleware: "auth",
-});
+    auth: {
+        unauthenticatedOnly: true,
+        navigateAuthenticatedTo: '/login',
+    }
+})
 </script>

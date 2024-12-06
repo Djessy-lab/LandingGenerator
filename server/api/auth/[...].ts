@@ -10,6 +10,7 @@ export default NuxtAuthHandler({
     signIn: "/login",
     error: "/login",
   },
+  
   providers: [
     // @ts-ignore
     GithubProvider.default({
