@@ -16,11 +16,12 @@
           <Button :level="4" @click.prevent="addFeature"
             class="border dark:border-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 shadow hover:shadow-none transition-all duration-300  p-2 rounded-lg flex items-center justify-center">
             Ajouter caractéristique
-            <Icon />
+            <Icon name="line-md:plus" />
           </Button>
           <Button :level="4" @click.prevent="addPricing"
             class="border dark:border-none shadow hover:shadow-none bg-white dark:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-300  p-2 rounded-lg flex items-center justify-center">
             Ajouter tarif
+            <Icon name="line-md:plus" />
           </Button>
         </div>
       </div>

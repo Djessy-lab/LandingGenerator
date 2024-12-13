@@ -1,5 +1,5 @@
 <template>
-  <div class="sm:w-[100%] lg:w-[60%] h-[25rem] mx-auto rounded-3xl">
+  <div class="mx-auto rounded-3xl" :style="{ width: imgArgWidth + '%', height: imgArgHeight + '%' }">
     <img :class="imageClass" :src="imgArg" alt="Comment ça marche">
   </div>
 </template>
@@ -14,6 +14,8 @@ export default {
     imgArgRounded: { type: Boolean, default: false },
     imgArgPosition: { type: String, default: 'center' },
     imgArgFit: { type: String, default: 'contain' },
+    imgArgWidth: { type: String, default: '50' },
+    imgArgHeight: { type: String, default: '50' },
   },
   computed: {
     imageClass() {

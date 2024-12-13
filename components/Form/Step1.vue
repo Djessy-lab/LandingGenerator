@@ -17,6 +17,8 @@
           :rounded="localConfig[`${key}Rounded`]"
           :objectPosition="localConfig[`${key}Position`]"
           :objectFit="localConfig[`${key}Fit`]"
+          :width="localConfig[`${key}Width`] || '50'"
+          :height="localConfig[`${key}Height`] || '50'"
           @save="(data) => handleImageSave({ ...data, field: key })"
           @file-selected="(fileData) => handleFileSelection(key, fileData)"
         />
@@ -73,6 +75,10 @@ export default {
         imgHeroFit: this.config.imgHeroFit || "contain",
         imgArgPosition: this.config.imgArgPosition || "center",
         imgArgFit: this.config.imgArgFit || "contain",
+        imgHeroWidth: this.config.imgHeroWidth || '50',
+        imgHeroHeight: this.config.imgHeroHeight || '50',
+        imgArgWidth: this.config.imgArgWidth || '50',
+        imgArgHeight: this.config.imgArgHeight || '50',
       },
       baseFields: {
         configName: {
@@ -110,13 +116,15 @@ export default {
     };
   },
   methods: {
-    handleImageSave({ file, shadow, rounded, position, fit, field }) {
+    handleImageSave({ file, shadow, rounded, position, fit, field, width, height }) {
       const keyPrefix = field === "imgHero" ? "imgHero" : "imgArg";
       this.localConfig[`${keyPrefix}`] = file ? file.url : null;
       this.localConfig[`${keyPrefix}Shadow`] = shadow;
       this.localConfig[`${keyPrefix}Rounded`] = rounded;
       this.localConfig[`${keyPrefix}Position`] = position;
       this.localConfig[`${keyPrefix}Fit`] = fit;
+      this.localConfig[`${keyPrefix}Width`] = width;
+      this.localConfig[`${keyPrefix}Height`] = height;
 
       this.updateConfig();
     },

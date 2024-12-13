@@ -1,25 +1,10 @@
 <template>
-  <Button
-    :title="localFile?.name"
-    :label="buttonLabel"
-    :level="4"
-    @click.prevent="openModal = true"
-  />
-  <Modal
-    v-if="openModal"
-    :modelValue="openModal"
-    title="Éditer une image"
-    size="xl"
-    @update:modelValue="closeModal"
-    @keydown.esc="closeModal"
-  >
+  <Button :title="localFile?.name" :label="buttonLabel" :level="4" @click.prevent="openModal = true" />
+  <Modal v-if="openModal" :modelValue="openModal" title="Éditer une image" size="xl" @update:modelValue="closeModal"
+    @keydown.esc="closeModal">
     <div class="flex max-lg:flex-col p-4">
       <div class="flex flex-col lg:w-[50%]">
-        <FileUpload
-          label="Ajouter une image"
-          :initialFile="localFile"
-          @file-selected="handleFileSelection"
-        />
+        <FileUpload label="Ajouter une image" :initialFile="localFile" @file-selected="handleFileSelection" />
         <div class="flex space-x-4 mt-4">
           <div class="flex items-center">
             <input type="checkbox" id="shadow-option" v-model="localShadow" />
@@ -33,51 +18,40 @@
         <div class="flex gap-4 mt-4">
           <div class="flex flex-col w-full">
             <label class="mb-1">Fit</label>
-            <Dropdown
-              :label="'Sélectionner un ajustement'"
-              :options="objectFitOptions"
-              v-model="localObjectFit"
-              :isOpen="openDropdown === 'fit'"
-              isFiltrable
-              @close="openDropdown = null"
-              @open="openDropdown = 'fit'"
-            />
+            <Dropdown :label="'Sélectionner un ajustement'" :options="objectFitOptions" v-model="localObjectFit"
+              :isOpen="openDropdown === 'fit'" isFiltrable @close="openDropdown = null" @open="openDropdown = 'fit'" />
           </div>
           <div class="flex flex-col w-full">
             <label class="mb-1">Position</label>
-            <Dropdown
-              :label="'Sélectionner une position'"
-              :options="objectPositionOptions"
-              v-model="localObjectPosition"
-              :isOpen="openDropdown === 'position'"
-              isFiltrable
-              @close="openDropdown = null"
-              @open="openDropdown = 'position'"
-            />
+            <Dropdown :label="'Sélectionner une position'" :options="objectPositionOptions"
+              v-model="localObjectPosition" :isOpen="openDropdown === 'position'" isFiltrable
+              @close="openDropdown = null" @open="openDropdown = 'position'" />
           </div>
+        </div>
+        <div class="flex flex-col mt-4">
+          <label class="mb-1">Largeur</label>
+          <input type="range" min="0" max="100" v-model="localWidth" />
+          <span>{{ localWidth }}%</span>
+        </div>
+        <div class="flex flex-col mt-4">
+          <label class="mb-1">Hauteur</label>
+          <input type="range" min="0" max="100" v-model="localHeight" />
+          <span>{{ localHeight }}%</span>
         </div>
       </div>
       <div class="lg:w-[50%] h-96 p-10 ml-4">
-        <img
-          v-if="localFile && localFile.url"
-          :src="localFile.url"
-          :class="imageClass"
-        />
+        <div v-if="localFile && localFile.url" :style="{ width: localWidth + '%', height: localHeight + '%' }">
+          <img :src="localFile.url" :style="{ width: localWidth + '%', height: localHeight + '%' }"
+            :class="imageClass" />
+        </div>
         <div v-else class="flex flex-col items-center justify-center border dark:border-gray-600" :class="imageClass">
-          <p class="text-center text-sm">
-            Aucun fichier sélectionné
-          </p>
+          <p class="text-center text-sm">Aucun fichier sélectionné</p>
         </div>
       </div>
     </div>
     <div class="flex justify-end mt-6">
       <Button label="Enregistrer" :level="1" @click.prevent="save" />
-      <Button
-        label="Annuler"
-        :level="3"
-        class="ml-4"
-        @click.prevent="closeModal"
-      />
+      <Button label="Annuler" :level="3" class="ml-4" @click.prevent="closeModal" />
     </div>
   </Modal>
 </template>
@@ -108,15 +82,23 @@ export default {
       type: String,
       default: "contain",
     },
+    width: {
+      type: String,
+      default: "50",
+    },
+    height: {
+      type: String,
+      default: "50",
+    },
   },
   data() {
     return {
       openModal: false,
       localFile: this.initialFile
         ? {
-            ...this.initialFile,
-            url: this.initialFile.url || URL.createObjectURL(this.initialFile),
-          }
+          ...this.initialFile,
+          url: this.initialFile.url || URL.createObjectURL(this.initialFile),
+        }
         : null,
       localShadow: this.shadow,
       localRounded: this.rounded,
@@ -141,6 +123,8 @@ export default {
         "object-scale-down",
       ],
       openDropdown: null,
+      localWidth: this.width,
+      localHeight: this.height,
     };
   },
   computed: {
@@ -178,6 +162,8 @@ export default {
             rounded: this.localRounded,
             position: this.localObjectPosition,
             fit: this.localObjectFit,
+            width: this.localWidth,
+            height: this.localHeight
           },
         });
       } else {
@@ -191,13 +177,15 @@ export default {
         rounded: this.localRounded,
         position: this.localObjectPosition,
         fit: this.localObjectFit,
+        width: this.localWidth,
+        height: this.localHeight
       });
       this.closeModal();
     },
     closeModal() {
       this.openModal = false;
       this.$emit("close");
-      this.closeDropdown()
+      this.closeDropdown();
     },
     closeDropdown() {
       this.openDropdown = null;

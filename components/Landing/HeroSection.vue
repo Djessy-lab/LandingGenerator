@@ -36,8 +36,8 @@
           S'inscrire
         </button>
       </div>
-      <div class="mt-8 sm:w-[80%] lg:w-[65%] h-[35rem] mx-auto mb-10">
-        <img :src="imgHero" :class="imageClass" />
+      <div class="mt-8  mx-auto mb-10" :style="{ width: imgHeroWidth + '%', height: imgHeroHeight + '%' }">
+        <img :src="imgHero" :class="imageClass"  />
       </div>
     </section>
   </div>
@@ -1328,6 +1328,8 @@ export default {
     imgHeroRounded: { type: Boolean, default: false },
     imgHeroPosition: { type: String, default: "center" },
     imgHeroFit: { type: String, default: "contain" },
+    imgHeroWidth: { type: String, default: '50' },
+    imgHeroHeight: { type: String, default: '50' },
   },
   created() {
     this.fetchUserEmail();
