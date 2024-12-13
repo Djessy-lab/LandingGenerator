@@ -1,6 +1,8 @@
 <template>
   <div
     class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-800 transition-colors duration-500">
+    <Toast :modelValue="isToastVisible" :title="toast.title" :message="toast.message" :type="toast.type"
+      @update:modelValue="isToastVisible = false" />
     <h2 class="text-center text-2xl mb-8 font-prompt">Se connecter avec</h2>
     <div class="flex flex-col gap-4">
       <Button @click="loginWithGitHub" :level="4">
@@ -33,6 +35,12 @@ export default {
     return {
       email: "",
       isLoading: false,
+      isToastVisible: false,
+      toast: {
+        title: "",
+        message: "",
+        type: "",
+      },
     };
   },
   methods: {
@@ -46,7 +54,7 @@ export default {
 
         if (response.status === 200) {
           localStorage.setItem("token", response.token);
-          alert("Vérifiez votre email pour le lien magique.");
+          this.triggerToast(response);
           this.$emit("authenticated", this.email);
           this.email = "";
         } else {
@@ -84,6 +92,12 @@ export default {
       } catch (error) {
         console.error("Erreur lors de la connexion avec Google:", error);
       }
+    },
+    triggerToast(result) {
+      this.toast.title = result.error ? "Erreur" : "Succès";
+      this.toast.message = result.message;
+      this.toast.type = result.error ? "error" : "success";
+      this.isToastVisible = true;
     },
   },
 };

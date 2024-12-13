@@ -51,17 +51,29 @@
       />
     </button>
     <main class="flex-1 p-4 dark:bg-gray-900 overflow-y-auto max-h-[100vh]">
-    <div class="w-full flex justify-between">
-    <div>
-      <h3 class="text-2xl font-prompt">Tableau de bord</h3>
-      <p class="text-gray-600 dark:text-gray-300">
-        Connecté en tant que : {{ userEmail }}
-      </p>
-    </div>
-    <div>
-      <img v-if="userImage" :src="userImage" class="rounded-full w-10 h-10 mr-4" alt="Avatar">
-    </div>
-    </div>
+      <Toast
+        :modelValue="isToastVisible"
+        :title="toast.title"
+        :message="toast.message"
+        :type="toast.type"
+        @update:modelValue="isToastVisible = false"
+      />
+      <div class="w-full flex justify-between">
+        <div>
+          <h3 class="text-2xl font-prompt">Tableau de bord</h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Connecté en tant que : {{ userEmail }}
+          </p>
+        </div>
+        <div>
+          <img
+            v-if="userImage"
+            :src="userImage"
+            class="rounded-full w-10 h-10 mr-4"
+            alt="Avatar"
+          />
+        </div>
+      </div>
       <div v-if="configsView" class="mt-10">
         <p v-if="!userConfigs.length">
           {{ noConfigMessage }}
@@ -138,6 +150,12 @@ export default {
           click: () => (this.showConfirmDialog = false),
         },
       ],
+      toast: {
+        title: "",
+        message: "",
+        type: "",
+      },
+      isToastVisible: false,
     };
   },
   props: {
@@ -148,6 +166,14 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this.handleKeyDown);
+    const toastData = localStorage.getItem("toastData");
+    if (toastData) {
+      const parsedToast = JSON.parse(toastData);
+      this.toast = { ...parsedToast };
+      this.isToastVisible = true;
+
+      localStorage.removeItem("toastData");
+    }
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.handleKeyDown);

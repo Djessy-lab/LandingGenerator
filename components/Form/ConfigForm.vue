@@ -1,5 +1,6 @@
 <template>
   <div class="py-8">
+    <Toast :modelValue="isToastVisible" :title="toast.title" :message="toast.message" :type="toast.type" />
     <div
       class="rounded-lg shadow-xl w-[90%] max-lg:w-[100%] mx-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-800 min-h-[40rem] max-lg:min-h-[55rem] relative">
       <form @submit.prevent="submitForm" class="space-y-6 dark:text-white">
@@ -57,10 +58,10 @@ export default {
         imgArg: "",
         imgHeroShadow: false,
         imgHeroRounded: false,
-        imgHeroWidth: '50',
-        imgHeroHeight: '50',
-        imgArgWidth: '50',
-        imgArgHeight: '50',
+        imgHeroWidth: "50",
+        imgHeroHeight: "50",
+        imgArgWidth: "50",
+        imgArgHeight: "50",
         imgArgShadow: false,
         imgArgRounded: false,
         advantages: [],
@@ -69,6 +70,12 @@ export default {
       },
       pendingUploads: {},
       isLoading: false,
+      isToastVisible: false,
+      toast: {
+        title: "",
+        message: "",
+        type: "",
+      },
     };
   },
   created() {
@@ -91,7 +98,6 @@ export default {
     handleConfigUpdate({ config, configName }) {
       this.config = config;
       this.configName = configName;
-
     },
     async handleFileUpload({ key, file, fileName }) {
       this.pendingUploads[key] = { file, fileName };
@@ -104,10 +110,13 @@ export default {
           const formData = new FormData();
           formData.append("file", file);
 
-          const response = await fetch(`/api/uploadFile?key=${key}&userId=${this.userId}`, {
-            method: "POST",
-            body: formData,
-          });
+          const response = await fetch(
+            `/api/uploadFile?key=${key}&userId=${this.userId}`,
+            {
+              method: "POST",
+              body: formData,
+            },
+          );
 
           if (!response.ok) {
             throw new Error(`Erreur lors de l'upload de ${key}`);
@@ -124,7 +133,9 @@ export default {
             : new Date().toISOString(),
         };
 
-        const apiUrl = this.isEditMode ? "/api/updateConfig" : "/api/saveConfig";
+        const apiUrl = this.isEditMode
+          ? "/api/updateConfig"
+          : "/api/saveConfig";
         const result = await $fetch(apiUrl, {
           method: "POST",
           body: {
@@ -138,14 +149,31 @@ export default {
           throw new Error(result.error);
         }
         this.pendingUploads = {};
-        alert(result.message);
-        this.$router.go(0);
+        this.triggerToast(result)
       } catch (error) {
         console.error("Erreur lors de la soumission du formulaire:", error);
         alert("Erreur lors de la soumission du formulaire: " + error.message);
       } finally {
         this.isLoading = false;
       }
+    },
+    triggerToast(result) {
+      this.toast.title = result.error ? "Erreur" : "Succès";
+      this.toast.message = result.message;
+      this.toast.type = result.error ? "error" : "success";
+      this.isToastVisible = true;
+
+      localStorage.setItem(
+        "toastData",
+        JSON.stringify({
+          title: this.toast.title,
+          message: this.toast.message,
+          type: this.toast.type,
+        })
+      );
+      setTimeout(() => {
+        this.$router.go(0);
+      }, 200);
     }
   },
 };
