@@ -39,12 +39,12 @@
           <span>{{ localHeight }}%</span>
         </div>
       </div>
-      <div class="lg:w-[50%] h-96 p-10 ml-4 flex justify-center">
+      <div class="lg:w-[50%] h-96 p-4 ml-4 flex justify-center border rounded">
         <div v-if="localFile && localFile.url" :style="{ width: localWidth + '%', height: localHeight + '%' }">
           <img :src="localFile.url"
             :class="imageClass" />
         </div>
-        <div v-else class="flex flex-col items-center justify-center border dark:border-gray-600" :class="imageClass">
+        <div v-else class="flex flex-col items-center justify-center dark:border-gray-600" :class="imageClass" :style="{ width: localWidth + '%', height: localHeight + '%' }">
           <p class="text-center text-sm">Aucun fichier sélectionné</p>
         </div>
       </div>

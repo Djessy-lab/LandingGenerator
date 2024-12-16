@@ -171,7 +171,9 @@ export default {
       const parsedToast = JSON.parse(toastData);
       this.toast = { ...parsedToast };
       this.isToastVisible = true;
-
+      if(this.toast.type === 'success') {
+        this.triggerConfetti();
+      }
       localStorage.removeItem("toastData");
     }
   },
@@ -288,6 +290,31 @@ export default {
           error,
         );
       }
+    },
+    triggerConfetti() {
+      const colors = ["#bb0000", "#0000ee", "#f9ff33"];
+      const end = Date.now() + 1.5 * 1000;
+      function frame() {
+        useConfetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 70,
+          origin: { x: 0 },
+          colors: colors,
+        });
+        useConfetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1 },
+          colors: colors,
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }
+      requestAnimationFrame(frame);
     },
   },
 };

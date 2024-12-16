@@ -1,6 +1,6 @@
 <template>
   <div
-    class="toast p-4 bg-white dark:bg-slate-700 rounded-xl shadow-md absolute bottom-3 right-4 z-10 w-full max-w-sm transition-transform duration-300"
+    class="p-4 bg-white dark:bg-slate-700 rounded-xl shadow-md fixed bottom-3 right-4 z-10 w-full max-w-sm transition-transform duration-300"
     :class="{ 'translate-y-0': modelValue, 'translate-y-5 opacity-0': !modelValue }">
     <div class="absolute top-0 right-0 p-2">
       <button @click.prevent="closeToast">
