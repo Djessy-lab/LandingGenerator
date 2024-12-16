@@ -1,6 +1,6 @@
 <template>
-  <div class="mx-auto rounded-3xl" :style="{ width: imgArgWidth + '%', height: imgArgHeight + '%' }">
-    <img :class="imageClass" :src="imgArg" alt="Comment ça marche">
+  <div v-if="imgArg" class="mx-auto rounded-3xl" :style="{ width: imgArgWidth + '%', height: imgArgHeight + 'rem' }">
+    <img :class="imageClass" :src="imgArg">
   </div>
 </template>
 

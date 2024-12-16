@@ -27,9 +27,7 @@
             'dot',
             toggleSize.dot,
             'absolute bg-white rounded-full shadow flex items-center justify-center transition-all duration-1000 ease-in-out',
-            isDarkMode
-              ? toggleSize.translateDark
-              : toggleSize.translateLight,
+            isDarkMode ? toggleSize.translateDark : toggleSize.translateLight,
           ]"
         >
           <Icon
@@ -65,7 +63,6 @@ export default {
   },
   mounted() {
     this.colorMode = useColorMode();
-
   },
   watch: {
     colorMode: {
@@ -73,15 +70,16 @@ export default {
       immediate: true,
       handler(newValue) {
         this.colorMode = newValue;
-      }
-    }
+        this.iconName;
+      },
+    },
   },
   computed: {
     isDarkMode() {
       return this.colorMode ? this.colorMode.value === "dark" : false;
     },
     iconName() {
-      if (!this.colorMode) return "";
+      if (!this.colorMode) return "line-md:moon-alt-to-sunny-outline-loop-transition";
       return this.colorMode.value === "dark"
         ? "line-md:sunny-filled-loop-to-moon-filled-loop-transition"
         : "line-md:moon-alt-to-sunny-outline-loop-transition";
@@ -125,7 +123,8 @@ export default {
   methods: {
     toggleColorMode() {
       if (!this.colorMode) return;
-      this.colorMode.preference = this.colorMode.value === "dark" ? "light" : "dark";
+      this.colorMode.preference =
+        this.colorMode.value === "dark" ? "light" : "dark";
     },
   },
 };

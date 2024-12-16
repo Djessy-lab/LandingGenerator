@@ -86,6 +86,7 @@
               @openConfig="openConfig"
               @deleteConfig="askDeleteConfig(config)"
               @editConfig="editConfig(config)"
+              @exportConfig="exportConfig(config)"
             />
           </div>
         </div>
@@ -290,6 +291,9 @@ export default {
           error,
         );
       }
+    },
+    async exportConfig(config) {
+      console.log("Exporter la configuration:", config);
     },
     triggerConfetti() {
       const colors = ["#bb0000", "#0000ee", "#f9ff33"];

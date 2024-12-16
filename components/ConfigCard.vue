@@ -1,7 +1,7 @@
 <template>
   <div class="relative group">
     <div class="rounded-lg flex flex-col">
-      <OptionsCard v-if="hasOptionsCard" @deleteConfig="deleteConfig" @editConfig="editConfig" />
+      <OptionsCard v-if="hasOptionsCard" @deleteConfig="deleteConfig" @editConfig="editConfig" @exportConfig="exportConfig(config)" />
       <button @click="$emit('openConfig', config)"
         class="hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 shadow-lg w-full rounded-lg hover:shadow-md transition-all duration-500 font-prompt dark:brightness-80 hover:brightness-95">
         <p class="bg-gray-100 dark:bg-gray-800 w-full h-40 flex flex-col justify-center rounded-t-lg"
@@ -33,7 +33,7 @@ import dayjs from "dayjs";
 
 export default {
   name: "ConfigCard",
-  emits: ["openConfig", "deleteConfig", "editConfig"],
+  emits: ["openConfig", "deleteConfig", "editConfig", "exportConfig"],
   props: {
     config: {
       type: Object,
@@ -53,6 +53,9 @@ export default {
     editConfig(){
       this.$emit('editConfig', this.config)
     },
+    exportConfig() {
+      this.$emit('exportConfig', this.config);
+    }
   }
 };
 </script>

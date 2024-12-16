@@ -36,7 +36,7 @@
           S'inscrire
         </button>
       </div>
-      <div class="mt-8  mx-auto mb-10" :style="{ width: imgHeroWidth + '%', height: imgHeroHeight + '%' }">
+      <div v-if="imgHero" class="mt-8 mx-auto mb-10" :style="{ width: imgHeroWidth + '%', height: imgHeroHeight + '%' }">
         <img :src="imgHero" :class="imageClass"  />
       </div>
     </section>

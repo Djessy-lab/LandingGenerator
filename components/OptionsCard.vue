@@ -16,6 +16,9 @@
       <button @click="editConfig">
         <Icon name="line-md:pencil" class="text-blue-600 hover:text-blue-800 dark:text-white h-5 w-5" />
       </button>
+      <button @click="exportConfig">
+        <Icon name="line-md:file-export" class="text-green-600 hover:text-green-800 dark:text-white h-5 w-5" />
+      </button>
     </div>
   </div>
 </template>
@@ -23,7 +26,7 @@
 <script>
 export default {
   name: "OptionsCard",
-  emits: ["deleteConfig", "editConfig"],
+  emits: ["deleteConfig", "editConfig", "exportConfig"],
   data() {
     return {
       viewOptions: false,
@@ -35,6 +38,9 @@ export default {
     },
     editConfig() {
       this.$emit('editConfig')
+    },
+    exportConfig() {
+      this.$emit('exportConfig');
     }
   }
 }
