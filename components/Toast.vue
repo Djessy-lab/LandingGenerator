@@ -44,7 +44,7 @@ export default {
         warning: 'carbon:warning-alt-filled',
         info: 'mdi:information-box',
       }
-      return name[this.type] || 'line-md:info-circle';
+      return name[this.type] || 'mdi:information-box';
     },
     iconColor() {
       const color = {

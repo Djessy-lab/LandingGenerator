@@ -1,8 +1,6 @@
 <template>
   <div
     class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-800 transition-colors duration-500">
-    <Toast :modelValue="isToastVisible" :title="toast.title" :message="toast.message" :type="toast.type"
-      @update:modelValue="isToastVisible = false" />
     <h2 class="text-center text-2xl mb-8 font-prompt">Se connecter avec</h2>
     <div class="flex flex-col gap-4">
       <Button @click="loginWithGitHub" :level="4">
@@ -24,6 +22,8 @@
         <Icon name="line-md:loading-loop" class="w-10 h-10 text-gray-600 dark:text-slate-700" />
       </span>
     </div>
+    <Toast :modelValue="isToastVisible" :title="toast.title" :message="toast.message" :type="toast.type"
+      @update:modelValue="isToastVisible = false" />
   </div>
 </template>
 

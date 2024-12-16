@@ -4,6 +4,7 @@
   >
     <aside :class="sideBarClasses">
       <ThemeToggle size="sm" />
+      <div class="border-2 border-red-800">COUCOU</div>
       <div class="mt-4 w-full" v-if="isSidebarOpen">
         <h2 class="text-lg font-bold mb-4">Configurations</h2>
         <ul class="space-y-2 flex-1">
