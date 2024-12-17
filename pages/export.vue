@@ -1,11 +1,19 @@
 <template>
-  <div class="bg-neutral-100 h-screen">
+  <div class="bg-neutral-100 h-screen relative">
+    <div class="absolute top-4 left-3">
+      <RouterLink to="/">
+        <Icon name="line-md:arrow-left" class="w-8 h-8 text-gray-600" />
+      </RouterLink>
+    </div>
     <h1 class="text-2xl font-semibold text-center py-4">Exporter la configuration</h1>
     <div class="flex justify-center">
-      <Button @click="exportConfig">Exporter</Button>
+      <Button @click="exportConfig">Exporter le code</Button>
+      <Button @click="deployView = true" v-if="!deployView" class="ml-2" :level="4">Déployer le code</Button>
+      <Button @click="deployView = false" v-else class="ml-2" :level="4">Aperçu du code</Button>
     </div>
-    <div class="w-[70%] h-[35rem] bg-white rounded-lg shadow-lg mx-auto mt-10">
-      <iframe ref="previewIframe" :src="previewUrl" class="w-full h-full" frameborder="0"
+    <div class="w-[70%] h-[35rem] rounded-lg shadow-lg mx-auto mt-10">
+      <DeployCard v-if="deployView" @create-repo="createRepo" @deploy-repo="deployRepo" />
+      <iframe v-else ref="previewIframe" :src="previewUrl" class="w-full h-full" frameborder="0"
         sandbox="allow-same-origin allow-scripts"></iframe>
     </div>
   </div>
@@ -23,6 +31,7 @@ export default {
       config: null,
       previewUrl: '',
       userId: null,
+      deployView: false
     };
   },
   async mounted() {
@@ -259,7 +268,7 @@ export default defineNuxtConfig({
       return components;
     },
     async getStarsImage() {
-      const response = await fetch('/path/to/stars.png');
+      const response = await fetch('/img/stars.png');
       const blob = await response.blob();
       return blob;
     },
@@ -276,6 +285,12 @@ export default defineNuxtConfig({
         console.log('Navigation empêchée vers :', target.href);
       }
     },
+    createRepo() {
+      console.log(this.config)
+    },
+    deployRepo(){
+      console.log(this.config);
+    }
   }
 }
 </script>
