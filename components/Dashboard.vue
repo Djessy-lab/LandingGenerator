@@ -293,7 +293,8 @@ export default {
       }
     },
     async exportConfig(config) {
-      console.log("Exporter la configuration:", config);
+      sessionStorage.setItem("exportConfig", JSON.stringify(config));
+      this.$router.push("/export");
     },
     triggerConfetti() {
       const colors = ["#bb0000", "#0000ee", "#f9ff33"];
