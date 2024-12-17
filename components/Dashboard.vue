@@ -294,7 +294,7 @@ export default {
     },
     async exportConfig(config) {
       sessionStorage.setItem("exportConfig", JSON.stringify(config));
-      this.$router.push("/export");
+      this.$router.push(`/export?userId=${this.userId}`);
     },
     triggerConfetti() {
       const colors = ["#bb0000", "#0000ee", "#f9ff33"];

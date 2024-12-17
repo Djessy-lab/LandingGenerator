@@ -1,10 +1,13 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-semibold text-center py-4">Exportation de la configuration</h1>
+  <div class="bg-neutral-100 h-screen">
+    <h1 class="text-2xl font-semibold text-center py-4">Exporter la configuration</h1>
     <div class="flex justify-center">
       <Button @click="exportConfig">Exporter</Button>
     </div>
-    <pre><code>{{ config }}</code></pre>
+    <div class="w-[70%] h-[35rem] bg-white rounded-lg shadow-lg mx-auto mt-10">
+      <iframe ref="previewIframe" :src="previewUrl" class="w-full h-full" frameborder="0"
+        sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
   </div>
 </template>
 
@@ -17,7 +20,9 @@ export default {
   name: "Export",
   data() {
     return {
-      config: null
+      config: null,
+      previewUrl: '',
+      userId: null,
     };
   },
   async mounted() {
@@ -25,8 +30,24 @@ export default {
     if (config) {
       this.config = JSON.parse(config);
       sessionStorage.removeItem("exportConfig");
+      this.userId = this.$route.query.userId;
+      this.previewUrl = this.generatePreviewUrl();
     } else {
       this.$router.push('/')
+    }
+    this.$nextTick(() => {
+      const iframe = this.$refs.previewIframe;
+      iframe.onload = () => {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDocument.addEventListener('click', this.preventNavigation);
+      };
+    });
+  },
+  beforeDestroy() {
+    const iframe = this.$refs.previewIframe;
+    if (iframe) {
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDocument.removeEventListener('click', this.preventNavigation);
     }
   },
   methods: {
@@ -241,7 +262,20 @@ export default defineNuxtConfig({
       const response = await fetch('/path/to/stars.png');
       const blob = await response.blob();
       return blob;
-    }
+    },
+    generatePreviewUrl() {
+      const configName = this.config.configName;
+      const userId = this.userId;
+      const baseUrl = window.location.origin;
+      return `${baseUrl}/page?configName=${configName}&userId=${userId}`;
+    },
+    preventNavigation(event) {
+      const target = event.target;
+      if (target.tagName === 'A') {
+        event.preventDefault();
+        console.log('Navigation empêchée vers :', target.href);
+      }
+    },
   }
 }
 </script>
