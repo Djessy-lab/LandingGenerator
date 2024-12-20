@@ -1,19 +1,19 @@
 <template>
-  <div class="flex flex-col w-[40%] gap-4">
+  <div class="flex flex-col w-[60%] gap-4">
     <transition-group name="fade" tag="div">
       <div
+        v-if="isLoading"
         v-for="(step, index) in steps"
         :key="index"
         class="flex items-center justify-center transition-opacity duration-600"
-        v-if="isLoading"
       >
         <div
           v-if="currentStep === index"
-          class="p-4 w-full h-20 flex items-center justify-center rounded-lg bg-gray-800 dark:bg-slate-600 shadow-xl animate-blink"
+          class="p-4 w-full h-24 flex items-center justify-center rounded-lg bg-slate-800 dark:bg-slate-600 shadow-xl animate-blink"
         >
-          <span class="text-white font-semibold"
+          <span class="text-white text-xl font-semibold flex"
             >{{ step
-            }}<Icon name="line-md:loading-alt-loop" class="w-4 h-4 ml-2"
+            }}<Icon name="line-md:loading-alt-loop" class="w-6 h-6 ml-2"
           /></span>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default {
           if (index === this.steps.length - 1) {
             setTimeout(() => {
               this.$emit("update:isLoading", false);
-            }, 5000); 
+            }, 5000);
           }
         }, index * 5000);
       });

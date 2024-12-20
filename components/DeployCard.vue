@@ -1,12 +1,12 @@
 <template>
-  <div class="h-full w-full flex flex-col">
     <div class="w-full">
-      <div class="flex justify-center my-10">
+      <div class="flex flex-col items-center my-10">
+        <Icon name="lineicons:github-original" class="w-20 h-20 text-black dark:text-white" />
         <a
           v-if="repoUrl"
           :href="repoUrl"
           target="_blank"
-          class="text-center text-slate-900 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+          class="text-center mt-4 underline text-slate-900 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
           >Lien vers le dépôt</a
         >
       </div>
@@ -37,7 +37,6 @@
         class="w-[80%] mx-auto"
       />
     </div> -->
-  </div>
 </template>
 
 <script>
