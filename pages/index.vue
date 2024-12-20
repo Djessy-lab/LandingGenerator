@@ -1,13 +1,18 @@
 <template>
   <div>
-    <Dashboard :user-email="userEmail" :user-id="userId" :user-image="userImage" :user-configs="userConfigs" />
+    <Dashboard
+      :user-email="userEmail"
+      :user-id="userId"
+      :user-image="userImage"
+      :user-configs="userConfigs"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
 
-const { data: authData } = useAuth();
+const { data: authData, getSession } = useAuth();
 
 const userEmail = ref(null);
 const userId = ref(null);
@@ -39,7 +44,7 @@ async function registerUser(userData) {
         email: userData.email,
         name: userData.name,
         image: userData.image,
-        provider: userData.provider
+        provider: userData.provider,
       },
     });
     return response;
@@ -86,26 +91,35 @@ watch(
           userConfigs.value = await fetchUserConfigs(userId.value);
         }
       } catch (error) {
-        console.error("Erreur lors de l'enregistrement de l'utilisateur:", error);
+        console.error(
+          "Erreur lors de l'enregistrement de l'utilisateur:",
+          error,
+        );
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
+  const session = await getSession();
+
+  if (session?.accessToken) {
+    localStorage.setItem("github_token", session.accessToken);
+    localStorage.setItem("auth_provider", "github");
+  }
   if (!authData.value?.user) {
     const isAuthenticated = await checkMagicLinkAuth();
     if (!isAuthenticated) {
-      navigateTo('/login');
+      navigateTo("/login");
     }
   }
 });
 
 definePageMeta({
-    auth: {
-        unauthenticatedOnly: true,
-        navigateAuthenticatedTo: '/login',
-    }
-})
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: "/login",
+  },
+});
 </script>

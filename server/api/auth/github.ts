@@ -28,7 +28,13 @@ export default defineEventHandler(async (event) => {
     throw new Error(tokenData.error_description);
   }
 
-  // Use the token to fetch user data or set a session
-  // For example, redirect to a dashboard or set a cookie
-  sendRedirect(event, '/dashboard');
+  const script = `
+    <script>
+      localStorage.setItem('github_token', '${tokenData.access_token}');
+      window.location.href = '/export';
+    </script>
+  `;
+
+  event.node.res.setHeader('Content-Type', 'text/html');
+  event.node.res.end(script);
 });

@@ -10,12 +10,17 @@ export default NuxtAuthHandler({
     signIn: "/login",
     error: "/login",
   },
-  
+
   providers: [
     // @ts-ignore
     GithubProvider.default({
       clientId: runtimeConfig.public.GITHUB_CLIENT_ID,
       clientSecret: runtimeConfig.GITHUB_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: 'repo user'
+        }
+      },
     }),
     // @ts-ignore
     GoogleProvider.default({
@@ -23,6 +28,19 @@ export default NuxtAuthHandler({
       clientSecret: runtimeConfig.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // @ts-ignore
+      session.accessToken = token.accessToken;
+      return session;
+    },
+  },
   // @ts-ignore
   basePath: "/api/auth",
   baseUrl: runtimeConfig.public.authOrigin,

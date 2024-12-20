@@ -1,5 +1,5 @@
 <template>
-  <button :class="buttonClasses" :title="title ? title : label">
+  <button :class="buttonClasses" :disabled="isDisabled" :title="title ? title : label">
     {{ label }}
     <slot />
   </button>
@@ -22,7 +22,8 @@ export default {
       type: String,
       default: "md",
       validator: (v) => ["", "sm", "md", "lg", "xl"].includes(v)
-    }
+    },
+    isDisabled: { type: Boolean, default: false }
   },
   computed: {
     buttonClasses() {

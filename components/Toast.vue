@@ -14,6 +14,7 @@
       <div>
         <h2 class="text-xl font-bold mb-4">{{ title }}</h2>
         <p class="text-gray-700 dark:text-white">{{ message }}</p>
+        <a v-if="link" target="_blank" :href="link" class="text-blue-600 dark:text-blue-400">{{ link }}</a>
       </div>
     </div>
   </div>
@@ -28,6 +29,7 @@ export default {
     message: { type: String, default: '' },
     type: { type: String, default: '' },
     duration: { type: Number, default: 3000 },
+    link: { type: String, default: '' },
   },
   watch: {
     modelValue(newValue) {

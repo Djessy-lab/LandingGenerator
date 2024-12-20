@@ -1,6 +1,7 @@
 <template>
   <div
-    class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-800 transition-colors duration-500">
+    class="flex flex-col justify-center p-32 rounded-2xl shadow-xl bg-gray-100 dark:bg-gray-800 transition-colors duration-500"
+  >
     <h2 class="text-center text-2xl mb-8 font-prompt">Se connecter avec</h2>
     <div class="flex flex-col gap-4">
       <Button @click="loginWithGitHub" :level="4">
@@ -15,15 +16,28 @@
       <h3 class="text-center text-2xl mt-10 font-prompt">
         Ou connectez-vous avec un lien magique 🪄
       </h3>
-      <input class="rounded-2xl p-2 text-center mb-4 min-w-64 dark:bg-gray-700" v-model="email" type="email"
-        id="auth-email" placeholder="Entrez votre email" />
+      <input
+        class="rounded-2xl p-2 text-center mb-4 min-w-64 dark:bg-gray-700"
+        v-model="email"
+        type="email"
+        id="auth-email"
+        placeholder="Entrez votre email"
+      />
       <Button v-if="!isLoading" @click="loginWithMagic"> Se connecter </Button>
       <span v-if="isLoading" class="flex items-center justify-center">
-        <Icon name="line-md:loading-loop" class="w-10 h-10 text-gray-600 dark:text-slate-700" />
+        <Icon
+          name="line-md:loading-loop"
+          class="w-10 h-10 text-gray-600 dark:text-slate-700"
+        />
       </span>
     </div>
-    <Toast :modelValue="isToastVisible" :title="toast.title" :message="toast.message" :type="toast.type"
-      @update:modelValue="isToastVisible = false" />
+    <Toast
+      :modelValue="isToastVisible"
+      :title="toast.title"
+      :message="toast.message"
+      :type="toast.type"
+      @update:modelValue="isToastVisible = false"
+    />
   </div>
 </template>
 
@@ -71,12 +85,16 @@ export default {
         process.env.NODE_ENV === "development"
           ? "http://localhost:3000"
           : "https://landing-generator-brown.vercel.app";
+
       try {
+        this.isLoading = true;
         await signIn("github", {
           callbackUrl: `${baseUrl}/`,
+          scope: "repo",
         });
       } catch (error) {
         console.error("Erreur lors de la connexion avec GitHub:", error);
+        this.isLoading = false;
       }
     },
     async loginWithGoogle() {

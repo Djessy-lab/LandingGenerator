@@ -7,6 +7,7 @@ const envFile =
     : ".env.development";
 dotenv.config({ path: envFile });
 
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },

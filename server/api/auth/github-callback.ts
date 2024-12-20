@@ -40,7 +40,6 @@ export default defineEventHandler(async (event) => {
             return { status: 201, message: 'Utilisateur créé avec succès.' };
         }
 
-        // Mise à jour de l'utilisateur existant
         const { error: updateError } = await supabase
             .from('users')
             .update({
