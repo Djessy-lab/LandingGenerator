@@ -2,7 +2,7 @@
   <div>
     <section
       id="testimonials"
-      :class="colorMode.value === 'dark' ? 'bg-gray-800' : 'bg-gray-100'"
+      :class="colorMode.value === 'dark' ? 'bg-gray-800 shadow-inner' : 'bg-gray-100 shadow-inner'"
       class="py-12"
     >
       <h2

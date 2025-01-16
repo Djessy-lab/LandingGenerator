@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dark:bg-gray-900 dark:text-white min-h-screen">
     <Dashboard
       :user-email="userEmail"
       :user-id="userId"

@@ -6,7 +6,7 @@
         class="w-20 h-20 text-black dark:text-white"
       />
     </div>
-    <Button @click="exportConfig" class="w-[80%] mb-4 mx-auto"
+    <Button @click="exportConfig" class="w-[60%] mb-4 mx-auto"
       >Exporter le code</Button
     >
   </div>

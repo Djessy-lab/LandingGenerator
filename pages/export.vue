@@ -3,20 +3,11 @@
     <div class="absolute top-4 right-3">
       <ThemeToggle size="sm" />
     </div>
-    <Toast
-      :modelValue="toastValue"
-      @update:modelValue="toastValue = false"
-      title="Succès"
-      message="Le dépôt a été créé et le projet a été pushé avec succès !"
-      type="success"
-      :link="repoUrl"
-    />
+    <Toast :modelValue="toastValue" @update:modelValue="toastValue = false" title="Succès"
+      message="Le dépôt a été créé et le projet a été pushé avec succès !" type="success" :link="repoUrl" />
     <div class="absolute top-4 left-3">
       <RouterLink to="/">
-        <Icon
-          name="line-md:arrow-left"
-          class="w-8 h-8 text-gray-600 dark:text-gray-50"
-        />
+        <Icon name="line-md:arrow-left" class="w-8 h-8 text-gray-600 dark:text-gray-50" />
       </RouterLink>
     </div>
     <h1 class="text-4xl font-prompt text-center py-4">
@@ -26,24 +17,14 @@
       <Tabs :tabs="tabs">
         <template #preview>
           <div class="w-full h-[40rem] rounded-lg mx-auto">
-            <iframe
-              ref="previewIframe"
-              :src="previewUrl"
-              class="w-full h-full rounded-b-lg"
-              frameborder="0"
-              sandbox="allow-same-origin allow-scripts"
-            ></iframe>
+            <iframe ref="previewIframe" :src="previewUrl" class="w-full h-full rounded-b-lg" frameborder="0"
+              sandbox="allow-same-origin allow-scripts"></iframe>
           </div>
         </template>
         <template #deploy>
           <div class="h-[40rem]">
-            <DeployCard
-              :isLoading="isLoading"
-              :deployButton="deployButton"
-              :repoUrl="repoUrl"
-              @create-repo="createRepo"
-              @deploy-repo="deployRepo"
-            />
+            <DeployCard :isLoading="isLoading" :deployButton="deployButton" :repoUrl="repoUrl" :repoExists="repoExists"
+              @create-repo="createRepo" @deploy-repo="deployRepo" />
           </div>
         </template>
         <template #export>
@@ -77,6 +58,8 @@ export default {
         { label: "Déployer le code", value: "deploy" },
       ],
       projectExporter: null,
+      repoExists: false,
+      vercelToken: "gBF8sUEIKhrykV7Jiv8f6aCK",
     };
   },
   async mounted() {
@@ -87,6 +70,8 @@ export default {
       this.userId = this.$route.query.userId;
       this.previewUrl = this.generatePreviewUrl();
       this.projectExporter = new ProjectExporter(this.config);
+
+      await this.checkRepoExists();
     } else {
       this.$router.push("/");
     }
@@ -108,16 +93,11 @@ export default {
     }
   },
   methods: {
-    async exportConfig() {
-      await this.projectExporter.exportConfig();
-    },
-    async createRepo() {
+    async checkRepoExists() {
       let token = localStorage.getItem("github_token");
-
       if (!token) {
         const { getSession } = useAuth();
         const session = await getSession();
-
         if (session?.accessToken) {
           token = session.accessToken;
           localStorage.setItem("github_token", token);
@@ -132,31 +112,86 @@ export default {
           Authorization: `token ${token}`,
         },
       });
+      const userData = await userResponse.json();
+      const owner = userData.login;
+      const repoName = this.config.configName.replace(/\s+/g, '');
 
+      const reposResponse = await fetch(`https://api.github.com/users/${owner}/repos?per_page=100`, {
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
+
+      if (!reposResponse.ok) {
+        console.error("Erreur lors de la récupération des dépôts :", await reposResponse.json());
+        alert("Erreur lors de la récupération des dépôts. Assurez-vous que votre token a les bonnes autorisations.");
+        return;
+      }
+
+      const repos = await reposResponse.json();
+
+      this.repoExists = repos.some(repo => repo.name.replace(/\s+/g, '') === repoName);
+      if (this.repoExists) {
+        this.showDeployButton = true;
+      }
+    },
+    async exportConfig() {
+      await this.projectExporter.exportConfig();
+    },
+    async createRepo() {
+      let token = localStorage.getItem("github_token");
+
+      if (!token) {
+        const { getSession } = useAuth();
+        const session = await getSession();
+        if (session?.accessToken) {
+          token = session.accessToken;
+          localStorage.setItem("github_token", token);
+        } else {
+          this.$router.push("/login");
+          return;
+        }
+      }
+      const userResponse = await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
       if (!userResponse.ok) {
         console.error("Invalid token:", await userResponse.json());
         this.$router.push("/login");
         return;
       }
-
       const tokenScopes = userResponse.headers.get("x-oauth-scopes");
-
       if (!tokenScopes.includes("repo")) {
         console.error("Token does not have the 'repo' scope");
         this.$router.push("/login");
         return;
       }
-
       const userData = await userResponse.json();
       const owner = userData.login;
       const repoName = this.config.configName;
-      this.isLoading = true;
 
+      const reposResponse = await fetch(`https://api.github.com/users/${owner}/repos`, {
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
+      const repos = await reposResponse.json();
+
+      const repoExists = repos.some(repo => repo.name === repoName);
+      if (repoExists) {
+        alert(`Le dépôt "${repoName}" existe déjà.`);
+        return;
+      }
+
+      this.isLoading = true;
       try {
         this.repoUrl = await this.projectExporter.createRepo(token, owner);
         this.isLoading = false;
         this.deployButton = true;
         this.toastValue = true;
+        this.triggerConfetti();
       } catch (error) {
         console.error(error);
         alert(`Erreur : ${error.message}`);
@@ -176,18 +211,59 @@ export default {
       }
     },
     async deployRepo() {
-      const response = await fetch("https://api.vercel.com/v1/deployments", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.vercelToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: this.config.configName,
-        }),
-      });
-      const data = await response.json();
-      console.log("Déploiement effectué :", data);
+      console.log("Début du déploiement...");
+      alert("Déploiement en cours...");
+      // try {
+      //   const response = await fetch("https://api.vercel.com/v13/deployments", {
+      //     method: "POST",
+      //     headers: {
+      //       Authorization: `Bearer ${this.vercelToken}`,
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       name: this.config.configName,
+      //     }),
+      //   });
+
+      //   const data = await response.json();
+      //   console.log("Réponse de l'API :", data);
+
+      //   if (response.ok) {
+      //     alert("Déploiement réussi !");
+      //     console.log("Détails du déploiement :", data);
+      //   } else {
+      //     console.error("Erreur lors du déploiement :", data);
+      //     alert(`Erreur lors du déploiement : ${data.message}`);
+      //   }
+      // } catch (error) {
+      //   console.error("Erreur inattendue :", error);
+      //   alert("Une erreur inattendue s'est produite.");
+      // }
+    },
+    triggerConfetti() {
+      const colors = ["#bb0000", "#0000ee", "#f9ff33"];
+      const end = Date.now() + 1.5 * 1000;
+      function frame() {
+        useConfetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 70,
+          origin: { x: 0 },
+          colors: colors,
+        });
+        useConfetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1 },
+          colors: colors,
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }
+      requestAnimationFrame(frame);
     },
   },
 };

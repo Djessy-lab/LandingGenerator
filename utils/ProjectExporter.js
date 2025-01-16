@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
+import { supabase } from '~/utils/supabase';
 
 class ProjectExporter {
   constructor(config) {
@@ -268,6 +269,45 @@ export default defineNuxtConfig({
         );
       }
 
+      const repoUrl = repoData.html_url;
+
+      const { userId, configName } = this.config;
+      const { data: user, error: userError } = await supabase
+        .from('users')
+        .select('configs')
+        .eq('id', userId)
+        .single();
+
+      if (userError) {
+        throw new Error(userError.message);
+      }
+
+      const configsString = user.configs || '"[]"';
+      let configs;
+
+      try {
+        configs = JSON.parse(configsString);
+      } catch (error) {
+        console.error('Erreur lors du parsing de la configuration:', error);
+        configs = [];
+      }
+
+      const configIndex = configs.findIndex(item => item.configName === configName);
+      if (configIndex !== -1) {
+        configs[configIndex] = { ...configs[configIndex], repoUrl };
+      } else {
+        configs.push({ configName, repoUrl, ...this.config });
+      }
+
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ configs: JSON.stringify(configs) })
+        .eq('id', userId);
+
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+
       const zipBlob = this.projectContent;
       if (!zipBlob) throw new Error("Le contenu du projet n'est pas prêt.");
 
@@ -348,7 +388,7 @@ export default defineNuxtConfig({
       }
       return repoData.html_url;
     } catch (error) {
-      console.error(error);
+      console.error('Erreur lors de la création du dépôt ou de la mise à jour de la configuration:', error);
       throw new Error(`Erreur : ${error.message}`);
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div :class="colorMode.value === 'dark' ? 'bg-gray-900' : gradientClass">
+  <div :class="bgClass">
     <header class="flex items-center justify-between p-4">
       <div class="text-xl font-bold font-mono" :class="colorMode.value === 'dark' ? 'text-gray-200' : 'text-black'">
         <a href="/">{{ appName }}</a>
@@ -36,8 +36,9 @@
           S'inscrire
         </button>
       </div>
-      <div v-if="imgHero" class="mt-8 mx-auto mb-10" :style="{ width: imgHeroWidth + '%', height: imgHeroHeight + '%' }">
-        <img :src="imgHero" :class="imageClass"  />
+      <div v-if="imgHero" class="mt-8 mx-auto mb-10"
+        :style="{ width: imgHeroWidth + '%', height: imgHeroHeight + '%' }">
+        <img :src="imgHero" :class="imageClass" />
       </div>
     </section>
   </div>
@@ -1321,15 +1322,16 @@ export default {
   props: {
     title: { type: String, default: "" },
     description: { type: String, default: "" },
-    color: { type: String, default: "blue-400" },
+    color: { type: String, default: "" },
+    buttonAndCardsColor: { type: String, default: "" },
     imgHero: { type: String, default: "" },
     appName: { type: String, default: "" },
     imgHeroShadow: { type: Boolean, default: false },
     imgHeroRounded: { type: Boolean, default: false },
     imgHeroPosition: { type: String, default: "center" },
     imgHeroFit: { type: String, default: "contain" },
-    imgHeroWidth: { type: String, default: '50' },
-    imgHeroHeight: { type: String, default: '50' },
+    imgHeroWidth: { type: String, default: "50" },
+    imgHeroHeight: { type: String, default: "50" },
   },
   created() {
     this.fetchUserEmail();
@@ -1349,11 +1351,18 @@ export default {
 
       return `bg-gradient-to-b ${fromClass} ${toClass}`;
     },
+    bgClass() {
+      if(this.color){
+        return this.colorMode.value === 'dark' ? 'bg-gray-900' : this.gradientClass
+      } else {
+        return ''
+      }
+    },
     linkClass() {
       return `text-${this.color}`;
     },
     buttonClass() {
-      const baseColor = this.color;
+      const baseColor = this.buttonAndCardsColor;
       const match = baseColor.match(/-(\d+)$/);
       if (!match) return `${this.color} hover:${this.color}`;
 

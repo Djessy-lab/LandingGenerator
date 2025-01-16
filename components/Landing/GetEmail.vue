@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="[`h-[50vh] flex items-center justify-center`, colorMode.value === 'dark' ? 'bg-gray-900' : gradientClass]">
+    :class="[`h-[50vh] flex items-center justify-center`, color ? bgClass : '']">
     <section id="get-email" class="flex flex-col items-center">
       <div class="text-center mb-10">
         <h3 class="text-3xl dark:text-white">S'inscrire pour l'accès anticipé</h3>
@@ -8,7 +8,7 @@
       </div>
       <div class="w-full flex justify-center">
         <input v-model="email" type="email" id="get-email" placeholder="votre.meilleur@email.com"
-          class="w-80 rounded-2xl p-1 text-center dark:bg-gray-700 dark:text-white">
+          class="w-80 shadow-lg rounded-2xl p-1 text-center dark:bg-gray-700 dark:text-white">
       </div>
       <div class="w-full flex justify-center mt-4">
         <button @click="subscribe"
@@ -266,7 +266,8 @@ export default {
     };
   },
   props: {
-    color: { type: String, default: "blue" },
+    color: { type: String, default: "" },
+    buttonAndCardsColor: { type: String, default: "" },
   },
   computed: {
     gradientClass() {
@@ -284,8 +285,15 @@ export default {
 
       return `bg-gradient-to-b ${fromClass} ${toClass}`;
     },
-    buttonClass() {
-      const baseColor = this.color;
+    bgClass(){
+      if(this.color){
+        return this.colorMode.value === 'dark' ? 'bg-gray-900' : this.gradientClass
+      } else {
+        return ''
+      }
+    }
+,    buttonClass() {
+      const baseColor = this.buttonAndCardsColor;
       const match = baseColor.match(/-(\d+)$/);
       if (!match) return `${this.color} hover:${this.color}`;
 

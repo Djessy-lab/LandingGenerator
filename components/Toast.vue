@@ -11,10 +11,18 @@
       <div class="mr-4">
         <Icon :name="iconName" :class="['h-5 w-5', iconColor]" />
       </div>
-      <div>
+      <div class="flex-1">
         <h2 class="text-xl font-bold mb-4">{{ title }}</h2>
         <p class="text-gray-700 dark:text-white">{{ message }}</p>
         <a v-if="link" target="_blank" :href="link" class="text-blue-600 dark:text-blue-400">{{ link }}</a>
+        <div v-if="type === 'confirm'" class="mt-4 flex justify-end space-x-2">
+          <Button :level="3" @click="onCancel">
+            Annuler
+          </Button>
+          <Button :level="1" @click="onConfirm">
+            Confirmer
+          </Button>
+        </div>
       </div>
     </div>
   </div>
@@ -30,10 +38,12 @@ export default {
     type: { type: String, default: '' },
     duration: { type: Number, default: 3000 },
     link: { type: String, default: '' },
+    onConfirm: { type: Function, default: () => {} },
+    onCancel: { type: Function, default: () => {} },
   },
   watch: {
     modelValue(newValue) {
-      if (newValue) {
+      if (newValue && this.type !== 'confirm') {
         setTimeout(this.closeToast, this.duration);
       }
     }
@@ -45,6 +55,7 @@ export default {
         error: 'ic:sharp-error',
         warning: 'carbon:warning-alt-filled',
         info: 'mdi:information-box',
+        confirm: 'mdi:help-circle',
       }
       return name[this.type] || 'mdi:information-box';
     },
@@ -54,6 +65,7 @@ export default {
         error: 'text-red-600',
         warning: 'text-yellow-400',
         info: 'text-blue-400',
+        confirm: 'text-blue-600',
       }
       return color[this.type] || 'text-blue-600';
     }

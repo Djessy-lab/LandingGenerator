@@ -16,11 +16,11 @@
         <FormStep3 v-if="currentStep === 3" :pricing="config.pricing" @update-pricing="updatePricing" />
         <FormStep4 v-if="currentStep === 4" :testimonials="config.testimonials"
           @update-testimonials="updateTestimonials" />
-        <div class="absolute bottom-0 right-0 flex justify-end space-x-2 p-10">
+        <div class="absolute -bottom-4 right-0 flex justify-end space-x-2 p-10">
           <Button :level="4" v-if="currentStep > 1 && !isLoading" @click.prevent="currentStep--">
             Précédent
           </Button>
-          <Button v-if="currentStep < 4" @click.prevent="currentStep++">
+          <Button v-if="currentStep < 4" @click.prevent="currentStep++" class="z-50">
             Suivant
           </Button>
           <Button v-if="currentStep === 4 && !isLoading" type="submit">
@@ -54,6 +54,8 @@ export default {
         titleHero: "",
         descriptionHero: "",
         color: "",
+        buttonAndCardsColor: "",
+        squared: false,
         imgHero: "",
         imgArg: "",
         imgHeroShadow: false,

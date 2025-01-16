@@ -1,5 +1,5 @@
 <template>
-  <div :class="['lg:h-[80vh]', colorMode.value === 'dark' ? 'bg-gray-900' : '']">
+  <div :class="['lg:h-[80vh]', color ? bgClass : '']">
     <h2 class="text-3xl font-bold text-center py-10 dark:text-white">Tarifs</h2>
     <div class="flex justify-center max-lg:flex-col max-lg:items-center lg:mt-10 px-10">
       <div v-for="(price, index) in pricing"
@@ -125,12 +125,13 @@ export default {
     return { colorMode }
   },
   props: {
-    color: { type: String, default: "blue" },
+    color: { type: String, default: "" },
+    buttonAndCardsColor: { type: String, default: "" },
     pricing: { type: Array, default: () => [] },
   },
   computed: {
     gradientClass() {
-      const baseColor = this.color.replace('bg-', '');
+      const baseColor = this.buttonAndCardsColor.replace('bg-', '');
 
       const match = baseColor.match(/-(\d+)$/);
       if (!match) return '';
@@ -144,6 +145,9 @@ export default {
 
       return `bg-gradient-to-b ${fromClass} ${toClass}`;
     },
+    bgClass(){
+      return this.colorMode.value === 'dark' ? 'bg-gray-900' : '';
+    }
   }
 }
 </script>
