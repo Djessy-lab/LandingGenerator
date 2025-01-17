@@ -1,17 +1,25 @@
 <template>
   <div>
     <Toast
-      v-model="showToast"
+      :modelValue="showSquaredToast"
       type="confirm"
       title="Confirmation"
       message="Le fond quadrillé va supprimer la couleur actuelle. Voulez-vous continuer ?"
-      :onConfirm="confirmSquaredChange"
-      :onCancel="cancelSquaredChange"
+      @confirm="confirmSquaredChange"
+      @cancel="cancelSquaredChange"
+    />
+    <Toast
+      :modelValue="showColorToast"
+      type="confirm"
+      title="Confirmation"
+      message="La couleur va supprimer le fond quadrillé actuel. Voulez-vous continuer ?"
+      @confirm="confirmColorChange"
+      @cancel="cancelColorChange"
     />
     <h3 class="text-xl font-semibold mb-4">Informations de base</h3>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div v-for="(value, key) in baseFields" :key="key" class="flex flex-col w-full"
-        :class="{ 'md:col-span-2': value.type === 'textarea' || key === 'color' }">
+        :class="{ 'md:col-span-2': value.type === 'textarea' || key === 'buttonsAndCardsColor'  }">
         <label class="font-semibold" :for="key">{{ value.label }}:</label>
         <ImageEditor v-if="key === 'imgHero' || key === 'imgArg'"
           :buttonLabel="localConfig[key] ? 'Modifier l\'image' : 'Ajouter une image'"
@@ -22,15 +30,13 @@
           @file-selected="(fileData) => handleFileSelection(key, fileData)" />
         <div v-else-if="key === 'color'" class="flex items-center justify-between mt-1">
           <div class="flex-1 flex justify-start">
-            <ColorPicker v-model="localConfig[key]" @update:modelValue="updateConfig" />
+            <ColorPicker v-model="localConfig[key]" @update:modelValue="handleColorChange" />
             <button v-if="localConfig.color" @click.prevent="resetColor" class="ml-2">
               <Icon name="line-md:close" class="text-black hover:text-gray-400 dark:text-white h-5 w-5" />
             </button>
           </div>
-          <div class="flex-1 flex justify-center">
-            <span class="text-gray-500 dark:text-gray-400 font-medium">OU</span>
-          </div>
-          <div class="flex-1 flex justify-end items-center space-x-3">
+        </div>
+          <div v-else-if="key === 'squared'" class="flex-1 flex justify-start items-center space-x-2">
             <button
               @click.prevent="handleSquaredChange"
               class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none"
@@ -41,9 +47,8 @@
                 :class="localConfig.squared ? 'translate-x-6' : 'translate-x-1'"
               />
             </button>
-            <label class="cursor-pointer" @click="handleSquaredChange">Fond quadrillé</label>
+            <span class="text-sm text-gray-500">{{ localConfig.squared ? 'On' : 'Off' }}</span>
           </div>
-        </div>
         <div v-else-if="key === 'buttonAndCardsColor'" class="mt-1">
           <ColorPicker v-model="localConfig[key]" @update:modelValue="updateConfig" />
         </div>
@@ -75,7 +80,9 @@ export default {
   },
   data() {
     return {
-      showToast: false,
+      showSquaredToast: false,
+      showColorToast: false,
+      pendingBgColor: null,
       localConfig: {
         ...this.config,
         configName: this.configName,
@@ -116,8 +123,9 @@ export default {
         },
         color: {
           label: "Couleur de fond",
-          type: "text",
-          placeholder: "green",
+        },
+        squared: {
+          label: "Fond quadrillé",
         },
         imgHero: {
           label: "Image Hero",
@@ -160,28 +168,49 @@ export default {
     },
     handleSquaredChange() {
       if (!this.localConfig.squared && this.localConfig.color) {
-        this.showToast = true;
+        this.showSquaredToast = true;
       } else {
         this.localConfig.squared = !this.localConfig.squared;
         this.updateConfig();
       }
     },
     confirmSquaredChange() {
-      event.preventDefault();
       this.localConfig.squared = true;
-      this.localConfig.color = '';
-      this.showToast = false;
+      this.resetColor()
+      this.showSquaredToast = false;
       this.updateConfig();
     },
     cancelSquaredChange() {
-      event.preventDefault();
       this.localConfig.squared = false;
-      this.showToast = false;
+      this.showSquaredToast = false;
       this.updateConfig();
     },
     resetColor() {
-      this.localConfig.color = '';
+      this.localConfig.color = null;
+      this.pendingBgColor = null;
       this.updateConfig();
+    },
+    handleColorChange(color) {
+      if (this.localConfig.squared) {
+        this.pendingBgColor = color;
+        this.localConfig.color = color;
+        this.showColorToast = true;
+      } else {
+        this.localConfig.color = color;
+        this.pendingBgColor = color;
+        this.updateConfig();
+      }
+    },
+    confirmColorChange() {
+      this.localConfig.squared = false;
+      this.localConfig.color = this.pendingBgColor;
+      this.showColorToast = false;
+      this.updateConfig();
+    },
+    cancelColorChange() {
+      this.localConfig.color = null;
+      this.pendingBgColor = null;
+      this.showColorToast = false;
     },
     updateConfig() {
       this.$emit("update-config", {
@@ -189,6 +218,29 @@ export default {
         configName: this.localConfig.configName,
       });
     },
+    handleKeydown(event) {
+      if (this.showSquaredToast) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          this.confirmSquaredChange();
+        } else if (event.key === 'Escape') {
+          this.cancelSquaredChange();
+        }
+      } else if (this.showColorToast) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          this.confirmColorChange();
+        } else if (event.key === 'Escape') {
+          this.cancelColorChange();
+        }
+      }
+    },
   },
+  mounted() {
+    window.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeydown);
+  }
 };
 </script>

@@ -33,29 +33,44 @@
         </button>
       </div>
       <div v-if="pricing.length"
-        :class="[seePrices ? 'h-56' : 'h-10', 'rounded-lg p-2 w-[72%] max-h-56 max-lg:max-h-96 overflow-auto transition-all duration-500 ease-in-out']">
+        :class="[seePrices ? '' : 'h-10', 'rounded-lg p-4 w-[72%] max-lg:max-h-96 transition-all duration-500 ease-in-out']">
 
-        <div v-if="seePrices" v-for="(price, index) in pricing" :key="index" class="flex items-center">
-          <div
-            class="border shadow rounded-lg p-2 w-full dark:border-none dark:bg-gray-900 dark:text-gray-200 mb-2 relative">
-            <button title="Supprimer" class="absolute top-0 right-0 p-2" @click.prevent="removePricing(index)">
-              <Icon name="line-md:close" class="h-4 w-4 " />
-            </button>
-            <p><span class="font-semibold">Titre : </span>{{ price.title }}</p>
-            <p><span class="font-semibold">Prix : </span>{{ price.price }} €</p>
-            <p><span class="font-semibold">Réccurence : </span>{{ price.duration }}</p>
-            <p><span class="font-semibold">Fonctionnalitées : </span>{{ price.features.join(', ') }}</p>
-          </div>
-        </div>
+        <draggable v-if="seePrices"
+          :list="localPricing"
+          @change="onDragEnd"
+          item-key="id"
+          :animation="200"
+          ghost-class="ghost-card"
+          drag-class="dragging-card"
+          class="flex flex-col">
+          <template #item="{ element, index }">
+            <div class="flex items-center">
+              <div
+                class="border shadow rounded-lg p-2 w-full dark:border-none dark:bg-gray-900 dark:text-gray-200 mb-2 relative cursor-move bg-white transition-transform duration-200 hover:scale-[1.02]">
+                <button title="Supprimer" class="absolute top-0 right-0 p-2" @click.prevent="removePricing(index)">
+                  <Icon name="line-md:close" class="h-4 w-4" />
+                </button>
+                <p><span class="font-semibold">Titre : </span>{{ element.title }}</p>
+                <p><span class="font-semibold">Prix : </span>{{ element.price }} €</p>
+                <p><span class="font-semibold">Réccurence : </span>{{ element.duration }}</p>
+                <p><span class="font-semibold">Fonctionnalitées : </span>{{ element.features.join(', ') }}</p>
+              </div>
+            </div>
+          </template>
+        </draggable>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+
 export default {
   name: "Step3",
+  components: {
+    draggable
+  },
   props: {
     pricing: {
       type: Array,
@@ -65,6 +80,7 @@ export default {
   data() {
     return {
       newPricing: {
+        id: '',
         title: "",
         price: null,
         duration: "",
@@ -72,7 +88,16 @@ export default {
       },
       newFeature: "",
       seePrices: false,
+      localPricing: [],
     };
+  },
+  watch: {
+    pricing: {
+      handler(newVal) {
+        this.localPricing = [...newVal];
+      },
+      immediate: true
+    }
   },
   methods: {
     addFeature() {
@@ -86,8 +111,13 @@ export default {
     },
     addPricing() {
       if (this.newPricing.title && this.newPricing.price !== null) {
-        this.$emit('update-pricing', [...this.pricing, { ...this.newPricing }]);
+        const newPricingWithId = {
+          ...this.newPricing,
+          id: crypto.randomUUID()
+        };
+        this.$emit('update-pricing', [...this.pricing, newPricingWithId]);
         this.newPricing = {
+          id: '',
           title: "",
           price: null,
           duration: "",
@@ -96,10 +126,23 @@ export default {
       }
     },
     removePricing(index) {
-      const updatedPricing = [...this.pricing];
+      const updatedPricing = [...this.localPricing];
       updatedPricing.splice(index, 1);
       this.$emit('update-pricing', updatedPricing);
     },
+    onDragEnd(event) {
+      this.$emit('update-pricing', [...this.localPricing]);
+    }
   },
 };
 </script>
+
+<style scoped>
+.ghost-card {
+  @apply opacity-50 bg-blue-50 border-2 border-blue-200;
+}
+
+.dragging-card {
+  @apply shadow-lg scale-[1.02] rotate-1;
+}
+</style>

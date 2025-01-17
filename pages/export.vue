@@ -59,7 +59,7 @@ export default {
       ],
       projectExporter: null,
       repoExists: false,
-      vercelToken: "gBF8sUEIKhrykV7Jiv8f6aCK",
+      vercelToken: "",
     };
   },
   async mounted() {
@@ -69,6 +69,7 @@ export default {
       sessionStorage.removeItem("exportConfig");
       this.userId = this.$route.query.userId;
       this.previewUrl = this.generatePreviewUrl();
+      this.config.userId = this.userId;
       this.projectExporter = new ProjectExporter(this.config);
 
       await this.checkRepoExists();

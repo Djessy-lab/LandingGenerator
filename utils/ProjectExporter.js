@@ -247,7 +247,12 @@ export default defineNuxtConfig({
 
   async createRepo(token, owner) {
     const repoName = this.config.configName;
+
+    // Créer le contenu du projet avant de créer le repo
     await this.createProject();
+    if (!this.projectContent) {
+      throw new Error("Le contenu du projet n'a pas pu être généré.");
+    }
 
     try {
       const createRepoResponse = await fetch(
@@ -255,7 +260,7 @@ export default defineNuxtConfig({
         {
           method: "POST",
           headers: {
-            Authorization: `token ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ name: repoName, private: true }),
@@ -264,6 +269,12 @@ export default defineNuxtConfig({
       const repoData = await createRepoResponse.json();
 
       if (!createRepoResponse.ok) {
+        console.error("Détails de l'erreur:", {
+          status: createRepoResponse.status,
+          statusText: createRepoResponse.statusText,
+          headers: Object.fromEntries(createRepoResponse.headers.entries()),
+          data: repoData
+        });
         throw new Error(
           `Erreur lors de la création du dépôt : ${repoData.message}`,
         );
@@ -272,85 +283,64 @@ export default defineNuxtConfig({
       const repoUrl = repoData.html_url;
 
       const { userId, configName } = this.config;
-      const { data: user, error: userError } = await supabase
-        .from('users')
-        .select('configs')
-        .eq('id', userId)
-        .single();
 
-      if (userError) {
-        throw new Error(userError.message);
-      }
-
-      const configsString = user.configs || '"[]"';
-      let configs;
-
-      try {
-        configs = JSON.parse(configsString);
-      } catch (error) {
-        console.error('Erreur lors du parsing de la configuration:', error);
-        configs = [];
-      }
-
-      const configIndex = configs.findIndex(item => item.configName === configName);
-      if (configIndex !== -1) {
-        configs[configIndex] = { ...configs[configIndex], repoUrl };
+      if (!userId) {
+        console.warn("Pas d'userId trouvé, on skip la mise à jour de la base de données");
       } else {
-        configs.push({ configName, repoUrl, ...this.config });
-      }
+        const { data: user, error: userError } = await supabase
+          .from('users')
+          .select('configs')
+          .eq('id', userId)
+          .single();
 
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({ configs: JSON.stringify(configs) })
-        .eq('id', userId);
+        if (userError) {
+          console.error("Erreur lors de la récupération de l'utilisateur:", userError);
+          throw new Error(userError.message);
+        }
 
-      if (updateError) {
-        throw new Error(updateError.message);
-      }
+        const configsString = user.configs || '"[]"';
+        let configs;
 
-      const zipBlob = this.projectContent;
-      if (!zipBlob) throw new Error("Le contenu du projet n'est pas prêt.");
+        try {
+          configs = JSON.parse(configsString);
+        } catch (error) {
+          console.error('Erreur lors du parsing de la configuration:', error);
+          configs = [];
+        }
 
-      const zip = await JSZip.loadAsync(zipBlob);
-
-      function encodePath(path) {
-        return path.split("/").map(encodeURIComponent).join("/");
-      }
-
-      async function getFileSha(owner, repo, path, token) {
-        const response = await fetch(
-          `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-          {
-            headers: {
-              Authorization: `token ${token}`,
-            },
-          },
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          return data.sha;
-        } else if (response.status === 404) {
-          return null;
+        const configIndex = configs.findIndex(item => item.configName === configName);
+        if (configIndex !== -1) {
+          configs[configIndex] = { ...configs[configIndex], repoUrl };
         } else {
-          const error = await response.json();
-          throw new Error(
-            `Erreur lors de la vérification du fichier ${path} : ${error.message}`,
-          );
+          configs.push({ configName, repoUrl, ...this.config });
+        }
+
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({ configs: JSON.stringify(configs) })
+          .eq('id', userId);
+
+        if (updateError) {
+          console.error("Erreur lors de la mise à jour de la configuration:", updateError);
+          throw new Error(updateError.message);
         }
       }
+
+      const zip = await JSZip.loadAsync(this.projectContent);
+
       for (const relativePath in zip.files) {
         const zipEntry = zip.files[relativePath];
         if (!zipEntry.dir) {
-          const encodedPath = encodePath(relativePath);
+          const encodedPath = this.encodePath(relativePath);
           const base64Content = await zipEntry.async("base64");
           try {
-            const existingSha = await getFileSha(
+            const existingSha = await this.getFileSha(
               owner,
               repoName,
               encodedPath,
               token,
             );
+
             const body = {
               message: `Ajout du fichier ${relativePath}`,
               content: base64Content,
@@ -359,20 +349,22 @@ export default defineNuxtConfig({
             if (existingSha) {
               body.sha = existingSha;
             }
+
             const response = await fetch(
               `https://api.github.com/repos/${owner}/${repoName}/contents/${encodedPath}`,
               {
                 method: "PUT",
                 headers: {
-                  Authorization: `token ${token}`,
+                  Authorization: `Bearer ${token}`,
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify(body),
               },
             );
+
             if (!response.ok) {
               const error = await response.json();
-              console.error("Réponse de l'API GitHub :", error);
+              console.error(`Erreur lors du push de ${relativePath}:`, error);
               throw new Error(
                 `Erreur lors de l'ajout du fichier ${relativePath} : ${error.message}`,
               );
@@ -386,10 +378,37 @@ export default defineNuxtConfig({
           }
         }
       }
-      return repoData.html_url;
+      return repoUrl;
     } catch (error) {
       console.error('Erreur lors de la création du dépôt ou de la mise à jour de la configuration:', error);
-      throw new Error(`Erreur : ${error.message}`);
+      throw error;
+    }
+  }
+
+  encodePath(path) {
+    return path.split("/").map(encodeURIComponent).join("/");
+  }
+
+  async getFileSha(owner, repo, path, token) {
+    const response = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.sha;
+    } else if (response.status === 404) {
+      return null;
+    } else {
+      const error = await response.json();
+      throw new Error(
+        `Erreur lors de la vérification du fichier ${path} : ${error.message}`,
+      );
     }
   }
 }

@@ -5,6 +5,7 @@
     @keydown.esc="close"
     tabindex="0"
     @click.self="close"
+    style="z-index: 9999;"
   >
     <div :class="modalSizeClass" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg overflow-scroll mx-auto">
       <div class="flex justify-between">

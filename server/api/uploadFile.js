@@ -27,7 +27,6 @@ export default defineEventHandler(async (event) => {
     const baseFileName = `${query.userId}_${sanitizedFileName}`;
     let filePath = `images/${baseFileName}`;
 
-    console.log(`Checking for existing file: ${baseFileName}`);
 
     const { data: existingFiles, error: listError } = await supabase.storage
       .from('landing-generator-bucket')
@@ -37,14 +36,12 @@ export default defineEventHandler(async (event) => {
       throw new Error(`Erreur lors de la liste des fichiers : ${listError.message}`);
     }
 
-    // Comparer uniquement la partie avant le timestamp
     const existingFile = existingFiles.find(file => {
-      const baseName = file.name.split('_')[0] + '_' + file.name.split('_')[1]; // ID + filename sans timestamp
+      const baseName = file.name.split('_')[0] + '_' + file.name.split('_')[1];
       return baseName === baseFileName;
     });
 
     if (existingFile) {
-      console.log(`File already exists: ${existingFile.name}`);
       const { data: existingUrl } = supabase.storage
         .from('landing-generator-bucket')
         .getPublicUrl(`images/${existingFile.name}`);
@@ -56,11 +53,9 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // Si le fichier n'existe pas, ajouter un timestamp
     const timestampedFileName = `${query.userId}_${Date.now()}_${sanitizedFileName}`;
     filePath = `images/${timestampedFileName}`;
 
-    console.log(`Uploading new file: ${timestampedFileName}`);
 
     const { data, error } = await supabase.storage
       .from('landing-generator-bucket')

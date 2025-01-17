@@ -2,7 +2,7 @@
   <div class="py-8">
     <Toast :modelValue="isToastVisible" :title="toast.title" :message="toast.message" :type="toast.type" />
     <div
-      class="rounded-lg shadow-xl w-[90%] max-lg:w-[100%] mx-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-800 min-h-[40rem] max-lg:min-h-[55rem] relative">
+      class="rounded-lg shadow-xl w-[90%] max-lg:w-[100%] mx-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-800 min-h-[42rem] max-lg:min-h-[55rem] relative">
       <form @submit.prevent="submitForm" class="space-y-6 dark:text-white">
         <h2 v-if="!configName" class="text-xl font-amsterdam text-center py-4">
           Créer une nouvelle configuration
@@ -16,14 +16,14 @@
         <FormStep3 v-if="currentStep === 3" :pricing="config.pricing" @update-pricing="updatePricing" />
         <FormStep4 v-if="currentStep === 4" :testimonials="config.testimonials"
           @update-testimonials="updateTestimonials" />
-        <div class="absolute -bottom-4 right-0 flex justify-end space-x-2 p-10">
-          <Button :level="4" v-if="currentStep > 1 && !isLoading" @click.prevent="currentStep--">
+        <div class="absolute -bottom-6 right-0 flex justify-end space-x-2 p-10">
+          <Button :level="4" v-if="currentStep > 1 && !isLoading" @click.prevent="currentStep--" class="z-50">
             Précédent
           </Button>
           <Button v-if="currentStep < 4" @click.prevent="currentStep++" class="z-50">
             Suivant
           </Button>
-          <Button v-if="currentStep === 4 && !isLoading" type="submit">
+          <Button v-if="currentStep === 4 && !isLoading" type="submit" class="z-50">
             {{ isEditMode ? "Mettre à jour" : "Enregistrer" }}
           </Button>
           <span v-if="isLoading">

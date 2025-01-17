@@ -1,7 +1,7 @@
 <template>
   <div
     class="p-4 bg-white dark:bg-slate-700 rounded-xl shadow-md fixed bottom-3 right-4 z-10 w-full max-w-sm transition-transform duration-300"
-    :class="{ 'translate-y-0': modelValue, 'translate-y-5 opacity-0': !modelValue }">
+    :class="{ 'translate-y-0': modelValue, 'translate-y-5 opacity-0': !modelValue }" :style="modelValue ? 'z-index: 9999;' : ''">
     <div class="absolute top-0 right-0 p-2">
       <button @click.prevent="closeToast">
         <Icon name="line-md:close" class="" />
@@ -16,10 +16,10 @@
         <p class="text-gray-700 dark:text-white">{{ message }}</p>
         <a v-if="link" target="_blank" :href="link" class="text-blue-600 dark:text-blue-400">{{ link }}</a>
         <div v-if="type === 'confirm'" class="mt-4 flex justify-end space-x-2">
-          <Button :level="3" @click="onCancel">
+          <Button :level="3" @click.prevent="onCancel">
             Annuler
           </Button>
-          <Button :level="1" @click="onConfirm">
+          <Button :level="1" @click.prevent="onConfirm">
             Confirmer
           </Button>
         </div>
@@ -38,8 +38,6 @@ export default {
     type: { type: String, default: '' },
     duration: { type: Number, default: 3000 },
     link: { type: String, default: '' },
-    onConfirm: { type: Function, default: () => {} },
-    onCancel: { type: Function, default: () => {} },
   },
   watch: {
     modelValue(newValue) {
@@ -71,6 +69,12 @@ export default {
     }
   },
   methods: {
+    onConfirm() {
+      this.$emit('confirm');
+    },
+    onCancel() {
+      this.$emit('cancel');
+    },
     closeToast() {
       this.$emit('update:modelValue', false);
     },
