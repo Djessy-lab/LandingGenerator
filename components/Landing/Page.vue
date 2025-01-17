@@ -11,7 +11,7 @@
       :imgHeroWidth="imgHeroWidth"
       :imgHeroHeight="imgHeroHeight"
       :color="color"
-      :buttonAndCardsColor="buttonAndCardsColor"
+      :buttonAndCardsColor="getButtonColor"
       :appName="appName"
     />
   </div>
@@ -34,13 +34,13 @@
     />
   </div>
   <div>
-    <LandingPricing :color="color" :pricing="pricing" :buttonAndCardsColor="buttonAndCardsColor" />
+    <LandingPricing :color="color" :pricing="pricing" :buttonAndCardsColor="getCardsColor" />
   </div>
   <div>
     <LandingTestimonials :testimonials="testimonials" />
   </div>
   <div>
-    <LandingGetEmail :color="color" :buttonAndCardsColor="buttonAndCardsColor" />
+    <LandingGetEmail :color="color" :buttonAndCardsColor="getButtonColor" />
   </div>
   <div class="absolute top-2 right-44 mt-3 mr-3">
     <ThemeToggle size="sm" />
@@ -53,7 +53,7 @@ export default {
     titleHero: { type: String, default: "" },
     descriptionHero: { type: String, default: "" },
     color: { type: String, default: "blue" },
-    buttonAndCardsColor: { type: String, default: "blue" },
+    buttonAndCardsColor: { type: String, default: "" },
     imgHero: { type: String, default: "" },
     imgArg: { type: String, default: "" },
     imgHeroShadow: { type: Boolean, default: false },
@@ -75,5 +75,13 @@ export default {
     configName: { type: String, default: "" },
     createdAt: { type: String, default: "" },
   },
+  computed: {
+    getButtonColor() {
+      return this.buttonAndCardsColor || 'bg-gray-900';
+    },
+    getCardsColor(){
+      return this.buttonAndCardsColor || 'bg-gray-200';
+    }
+  }
 };
 </script>

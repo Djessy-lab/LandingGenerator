@@ -106,10 +106,14 @@ export default {
 
 <style scoped>
 .ghost-card {
-  @apply opacity-50 bg-blue-50 border-2 border-blue-200;
+  opacity: 0.5;
+  background-color: #ebf8ff;
+  border-width: 2px;
+  border-color: #bee3f8; 
 }
 
 .dragging-card {
-  @apply shadow-lg scale-[1.02] rotate-1;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+  transform: scale(1.02) rotate(1deg);
 }
 </style>

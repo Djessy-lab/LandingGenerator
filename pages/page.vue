@@ -21,7 +21,7 @@ export default {
   },
   async mounted() {
     const configName = this.$route.query.configName;
-    this.userId = this.$route.query.userId;
+    this.userId = sessionStorage.getItem('userId');
 
     if (configName && this.userId) {
       try {

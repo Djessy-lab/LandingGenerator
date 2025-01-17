@@ -67,7 +67,7 @@ export default {
     if (config) {
       this.config = JSON.parse(config);
       sessionStorage.removeItem("exportConfig");
-      this.userId = this.$route.query.userId;
+      this.userId = sessionStorage.getItem('userId');
       this.previewUrl = this.generatePreviewUrl();
       this.config.userId = this.userId;
       this.projectExporter = new ProjectExporter(this.config);

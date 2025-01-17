@@ -261,9 +261,10 @@ export default {
       this.editConfigView = false;
     },
     openConfig(config) {
+      sessionStorage.setItem('userId', this.userId);
       this.$router.push({
         path: "/page",
-        query: { configName: config.configName, userId: this.userId },
+        query: { configName: config.configName },
       });
     },
     askDeleteConfig(config) {
@@ -294,7 +295,8 @@ export default {
     },
     async exportConfig(config) {
       sessionStorage.setItem("exportConfig", JSON.stringify(config));
-      this.$router.push(`/export?userId=${this.userId}`);
+      sessionStorage.setItem("userId", this.userId);
+      this.$router.push(`/export`);
     },
     triggerConfetti() {
       const colors = ["#bb0000", "#0000ee", "#f9ff33"];

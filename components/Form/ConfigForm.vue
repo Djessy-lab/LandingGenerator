@@ -54,7 +54,7 @@ export default {
         titleHero: "",
         descriptionHero: "",
         color: "",
-        buttonAndCardsColor: "",
+        buttonAndCardsColor: "bg-blue-500",
         squared: false,
         imgHero: "",
         imgArg: "",
