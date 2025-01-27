@@ -1,5 +1,5 @@
 <template>
-  <div :class="[`lg:h-[70vh] relative`, color ? bgClass : '']">
+  <div :class="[`py-20 relative`, color ? bgClass : '']">
     <h2
       class="text-3xl font-bold text-center p-12"
       :class="colorMode.value === 'dark' ? 'text-white' : 'text-black'"
@@ -7,13 +7,16 @@
       Pourquoi utiliser {{ appName }} ?
     </h2>
     <div
-      class="flex justify-center max-lg:flex-col max-lg:items-center px-10 lg:mt-10 max-lg:mb-20"
+      :class="[
+        'grid gap-10 px-10 mt-10 mb-20 justify-items-center',
+        gridClass,
+      ]"
     >
       <div
         v-for="(advantage, index) in advantages"
         :key="index"
         :class="[
-          `shadow-lg rounded-lg w-96 max-lg:h-[30%] max-lg:w-[100%] max-lg:overflow-scroll p-10 lg:mr-10 max-lg:mt-10 transition-transform duration-700 hover:-translate-y-2`,
+          `shadow-lg rounded-lg overflow-auto w-80 max-lg:w-full max-h-96 p-10 transition-transform duration-700 hover:-translate-y-2`,
           colorMode.value === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-100',
         ]"
       >
@@ -545,6 +548,13 @@ export default {
     appName: { type: String, default: "" },
   },
   computed: {
+    gridClass() {
+      const length = this.advantages.length;
+      if (length === 1) return "max-lg:grid-cols-1 grid-cols-1";
+      if (length === 2) return "max-lg:grid-cols-1 grid-cols-2";
+      if (length === 3) return "max-lg:grid-cols-1 grid-cols-3";
+      return "max-lg:grid-cols-1  grid-cols-4";
+    },
     gradientClass() {
       const baseColor = this.color.replace("bg-", "");
 
@@ -555,7 +565,10 @@ export default {
       const lighterShadeFrom = Math.max(currentShade - 100, 50);
       const lighterShadeTo = 0;
 
-      const fromClass = `from-${baseColor.replace(/-\d+$/, `-${lighterShadeFrom}`)}`;
+      const fromClass = `from-${baseColor.replace(
+        /-\d+$/,
+        `-${lighterShadeFrom}`
+      )}`;
       const toClass = `to-${baseColor.replace(/-\d+$/, `-${lighterShadeTo}`)}`;
 
       return `bg-gradient-to-b ${fromClass} ${toClass}`;

@@ -61,6 +61,7 @@ class ProjectExporter {
       :imgHeroWidth="imgHeroWidth"
       :imgHeroHeight="imgHeroHeight"
       :color="color"
+      :buttonAndCardsColor="buttonAndCardsColor"
       :appName="appName"
     />
     <LandingAdvantages
@@ -79,6 +80,7 @@ class ProjectExporter {
     />
     <LandingPricing
       :color="color"
+      :buttonAndCardsColor="buttonAndCardsColor"
       :pricing="pricing"
     />
     <LandingTestimonials
@@ -86,6 +88,7 @@ class ProjectExporter {
     />
     <LandingGetEmail
       :color="color"
+      :buttonAndCardsColor="buttonAndCardsColor"
     />
   </div>
 </template>
@@ -98,6 +101,7 @@ export default {
       titleHero: ${JSON.stringify(this.config.titleHero)},
       descriptionHero: ${JSON.stringify(this.config.descriptionHero)},
       color: ${JSON.stringify(this.config.color)},
+      buttonAndCardsColor: ${JSON.stringify(this.config.buttonAndCardsColor)},
       imgHero: ${JSON.stringify(this.config.imgHero)},
       imgArg: ${JSON.stringify(this.config.imgArg)},
       imgHeroShadow: ${this.config.imgHeroShadow},
@@ -248,7 +252,6 @@ export default defineNuxtConfig({
   async createRepo(token, owner) {
     const repoName = this.config.configName;
 
-    // Créer le contenu du projet avant de créer le repo
     await this.createProject();
     if (!this.projectContent) {
       throw new Error("Le contenu du projet n'a pas pu être généré.");

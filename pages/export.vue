@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-neutral-100 dark:bg-slate-800 min-h-screen relative">
+  <div class="bg-neutral-100 dark:bg-slate-800 min-h-screen py-10 relative">
     <div class="absolute top-4 right-3">
       <ThemeToggle size="sm" />
     </div>
@@ -10,7 +10,7 @@
         <Icon name="line-md:arrow-left" class="w-8 h-8 text-gray-600 dark:text-gray-50" />
       </RouterLink>
     </div>
-    <h1 class="text-4xl font-prompt text-center py-4">
+    <h1 class="text-4xl font-prompt dark:text-white text-center py-4">
       Exporter la configuration
     </h1>
     <div class="w-[80%] max-lg:w-[100%] mx-auto">
@@ -46,7 +46,7 @@ export default {
     return {
       config: null,
       previewUrl: "",
-      userId: null,
+      userId: "",
       deployView: false,
       isLoading: false,
       toastValue: false,
@@ -203,7 +203,7 @@ export default {
       const configName = this.config.configName;
       const userId = this.userId;
       const baseUrl = window.location.origin;
-      return `${baseUrl}/page?configName=${configName}&userId=${userId}`;
+      return `${baseUrl}/page?name=${configName}&userId=${userId}`;
     },
     preventNavigation(event) {
       const target = event.target;

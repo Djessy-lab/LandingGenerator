@@ -1383,7 +1383,6 @@ export default {
     goLogin() {
       this.$router.push({
         path: "/login",
-        query: { color: this.color, appName: this.appName },
       });
     },
     setUserEmail(email) {

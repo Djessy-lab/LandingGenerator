@@ -20,7 +20,7 @@ export default {
     };
   },
   async mounted() {
-    const configName = this.$route.query.configName;
+    const configName = this.$route.query.name;
     this.userId = sessionStorage.getItem('userId');
 
     if (configName && this.userId) {

@@ -1,49 +1,55 @@
 <template>
-  <div>
-    <LandingHeroSection
-      :imgHero="imgHero"
-      :title="titleHero"
-      :description="descriptionHero"
-      :imgHeroShadow="imgHeroShadow"
-      :imgHeroRounded="imgHeroRounded"
-      :imgHeroPosition="imgHeroPosition"
-      :imgHeroFit="imgHeroFit"
-      :imgHeroWidth="imgHeroWidth"
-      :imgHeroHeight="imgHeroHeight"
-      :color="color"
-      :buttonAndCardsColor="getButtonColor"
-      :appName="appName"
-    />
-  </div>
-  <div>
-    <LandingAdvantages
-      :color="color"
-      :advantages="advantages"
-      :appName="appName"
-    />
-  </div>
-  <div class="mt-32">
-    <LandingHowItsWorks
-      :imgArg="imgArg"
-      :imgArgShadow="imgArgShadow"
-      :imgArgRounded="imgArgRounded"
-      :imgArgPosition="imgArgPosition"
-      :imgArgFit="imgArgFit"
-      :imgArgWidth="imgArgWidth"
-      :imgArgHeight="imgArgHeight"
-    />
-  </div>
-  <div>
-    <LandingPricing :color="color" :pricing="pricing" :buttonAndCardsColor="getCardsColor" />
-  </div>
-  <div>
-    <LandingTestimonials :testimonials="testimonials" />
-  </div>
-  <div>
-    <LandingGetEmail :color="color" :buttonAndCardsColor="getButtonColor" />
-  </div>
-  <div class="absolute top-2 right-44 mt-3 mr-3">
-    <ThemeToggle size="sm" />
+  <div class="relative">
+    <div>
+      <LandingHeroSection
+        :imgHero="imgHero"
+        :title="titleHero"
+        :description="descriptionHero"
+        :imgHeroShadow="imgHeroShadow"
+        :imgHeroRounded="imgHeroRounded"
+        :imgHeroPosition="imgHeroPosition"
+        :imgHeroFit="imgHeroFit"
+        :imgHeroWidth="imgHeroWidth"
+        :imgHeroHeight="imgHeroHeight"
+        :color="color"
+        :buttonAndCardsColor="getButtonColor"
+        :appName="appName"
+      />
+    </div>
+    <div>
+      <LandingAdvantages
+        :color="color"
+        :advantages="advantages"
+        :appName="appName"
+      />
+    </div>
+    <div>
+      <LandingHowItsWorks
+        :imgArg="imgArg"
+        :imgArgShadow="imgArgShadow"
+        :imgArgRounded="imgArgRounded"
+        :imgArgPosition="imgArgPosition"
+        :imgArgFit="imgArgFit"
+        :imgArgWidth="imgArgWidth"
+        :imgArgHeight="imgArgHeight"
+      />
+    </div>
+    <div>
+      <LandingPricing
+        :color="color"
+        :pricing="pricing"
+        :buttonAndCardsColor="getCardsColor"
+      />
+    </div>
+    <div>
+      <LandingTestimonials :testimonials="testimonials" />
+    </div>
+    <div>
+      <LandingGetEmail :color="color" :buttonAndCardsColor="getButtonColor" />
+    </div>
+    <div class="absolute top-2 right-44 mt-3 mr-3">
+      <ThemeToggle size="sm" />
+    </div>
   </div>
 </template>
 <script>
@@ -77,11 +83,11 @@ export default {
   },
   computed: {
     getButtonColor() {
-      return this.buttonAndCardsColor || 'bg-gray-900';
+      return this.buttonAndCardsColor || "bg-gray-900";
     },
-    getCardsColor(){
-      return this.buttonAndCardsColor || 'bg-gray-200';
-    }
-  }
+    getCardsColor() {
+      return this.buttonAndCardsColor || "bg-gray-200";
+    },
+  },
 };
 </script>

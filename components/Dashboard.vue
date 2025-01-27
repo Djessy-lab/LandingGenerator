@@ -161,7 +161,7 @@ export default {
   },
   props: {
     userEmail: { type: String, default: null },
-    userId: { type: Number, default: null },
+    userId: { type: String, default: '' },
     userImage: { type: String, default: null },
     userConfigs: { type: Array, default: () => [] },
   },
@@ -264,7 +264,7 @@ export default {
       sessionStorage.setItem('userId', this.userId);
       this.$router.push({
         path: "/page",
-        query: { configName: config.configName },
+        query: { name: config.configName },
       });
     },
     askDeleteConfig(config) {
